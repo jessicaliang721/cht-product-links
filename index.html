@@ -123,8 +123,9 @@
   
     .view-toggle { display: flex; align-items: center; gap: 10px; margin: 20px 0 4px; }
     .view-toggle .view-label { font-weight: 700; }
-    .view-toggle button { font: inherit; border: 2px solid var(--border); background: #fff; color: var(--text); padding: 8px 18px; font-weight: 700; cursor: pointer; box-shadow: 3px 3px 0 var(--border); }
-    .view-toggle button[aria-pressed="true"] { background: var(--sage); }
+    .view-toggle button { font: inherit; border: 0; background: transparent; color: var(--text); padding: 4px 2px; font-weight: 700; cursor: pointer; }
+    .view-toggle button[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 3px; }
+    .view-toggle .view-sep { color: var(--dim); }
     .collection-section { margin: 26px 0 36px; }
     .collection-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
     .collection-head h2 { font-family: "Sour Gummy", ui-rounded, system-ui, sans-serif; margin: 0; font-size: 26px; }
@@ -165,6 +166,7 @@
       <div class="view-toggle" role="group" aria-label="View as">
         <span class="view-label">View as</span>
         <button type="button" id="viewGallery" aria-pressed="true">Gallery</button>
+        <span class="view-sep" aria-hidden="true">|</span>
         <button type="button" id="viewCollections" aria-pressed="false">Collections</button>
       </div>
       <section id="collectionsView" aria-label="Collections" hidden></section>
@@ -379,8 +381,8 @@
       const categories = ['All', ...new Set(products.map(product => product.category).sort())];
       categoryWrap.innerHTML = categories.map(category => `<button type="button" class="category-button" data-category="${escapeHtml(category)}" aria-pressed="${state.category === category}">${escapeHtml(category)}</button>`).join('');
     }
-    const COLLECTION_ORDER = ['Crafts & supplies', 'Pens & ink', 'Covers & organizers', 'Desk & tech', 'Notebooks & planners', 'E-readers & accessories'];
-    const COLLECTION_SHADOWS = { 'Crafts & supplies': '#F67E59', 'Pens & ink': '#99C1BB', 'Covers & organizers': '#FDA009', 'Desk & tech': '#F0A4D6', 'Notebooks & planners': '#356669', 'E-readers & accessories': '#FAD3BC' };
+    const COLLECTION_ORDER = ['Covers & organizers', 'Crafts & supplies', 'Desk & tech', 'E-readers & accessories', 'Notebooks & planners', 'Pens & ink'];
+    const COLLECTION_SHADOWS = ['#F0A4D6', '#FDA009', '#F67E59', '#99C1BB', '#FAD3BC', '#356669'];
     function shuffleInPlace(items) {
       for (let i = items.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -409,11 +411,11 @@
         </article>`;
     }
     function renderCollections() {
-      collectionsView.innerHTML = COLLECTION_ORDER.map(category => {
+      collectionsView.innerHTML = COLLECTION_ORDER.map((category, index) => {
         const items = products.filter(product => product.category === category);
         if (!items.length) return '';
         const sample = shuffleInPlace(items.slice()).slice(0, 5);
-        const shadow = COLLECTION_SHADOWS[category] || '#356669';
+        const shadow = COLLECTION_SHADOWS[index % COLLECTION_SHADOWS.length];
         const cards = sample.map(product => collectionCardHtml(product, shadow)).join('');
         return `<section class="collection-section" aria-label="${escapeHtml(category)}">
           <div class="collection-head">
