@@ -7,179 +7,300 @@
   <link rel="icon" href="data:," />
   <title>Product Links</title>
   <style>
-    @font-face {
-      font-family: "Sour Gummy";
-      src: url("assets/sour-gummy.woff2") format("woff2");
-      font-weight: 100 900;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "Poppins";
-      src: url("assets/poppins-regular.woff2") format("woff2");
-      font-weight: 100 900;
-      font-style: normal;
-      font-display: swap;
-    }
-    :root {
-      color-scheme: light;
-      --bg: #f6f1ed;
-      --surface: #fffaf7;
-      --surface-soft: #fad3bc;
-      --text: #356669;
-      --dim: #5a817d;
-      --border: #356669;
-      --accent: #f67e59;
-      --accent-contrast: #356669;
-      --sage: #99c1bb;
-      --amber: #fda009;
-      --pink: #f0a4d6;
-      --danger: #a63d35;
-      --focus: #fda009;
-      --offset: 5px 5px 0 #356669;
-      --soft-offset: 5px 5px 0 #f0a4d6;
-    }
-    * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-    html { background: var(--bg); scroll-behavior: smooth; }
-    body { margin: 0; min-width: 320px; background: var(--bg); color: var(--text); font-family: "Poppins", ui-rounded, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-    button, input { font: inherit; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-    svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    .app-frame { min-height: 100%; background: var(--bg); }
-    .ledger-shell { width: min(1040px, 100%); margin: 0 auto; padding: 16px 14px calc(86px + env(safe-area-inset-bottom)); }
-    .brand-hero { margin-bottom: 30px; }
-    .banner-frame { position: relative; margin: 0 5px 0 0; border: 2px solid var(--border); background: var(--pink); box-shadow: var(--offset); overflow: hidden; }
-    .brand-banner { display: block; width: 100%; height: auto; object-fit: cover; }
-    .catalog-summary { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin: 22px 5px 0 0; padding: 2px 0 0; }
-    .catalog-summary .intro-copy { margin: 0; max-width: 700px; color: var(--text); font-size: 14px; line-height: 1.55; }
-    .find-tools { margin-bottom: 22px; }
-    .search-field { position: relative; display: flex; align-items: center; min-height: 58px; margin: 0 5px 0 0; background: var(--surface); border: 2px solid var(--border); box-shadow: 5px 5px 0 var(--sage); }
-    .search-field > svg { position: absolute; left: 16px; color: var(--text); pointer-events: none; }
-    .search-field input { width: 100%; min-width: 0; height: 56px; border: 0; padding: 0 72px 0 48px; background: transparent; color: var(--text); outline: none; font-size: 15px; }
-    .search-field input::placeholder { color: var(--dim); opacity: 1; }
-    .search-field:focus-within { box-shadow: 5px 5px 0 var(--amber); }
-    .clear-search { position: absolute; right: 8px; min-height: 40px; border: 0; padding: 0 9px; color: var(--text); background: transparent; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .category-list { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
-    .category-button { min-height: 40px; border: 2px solid var(--border); border-radius: 0; padding: 7px 12px; color: var(--text); background: var(--surface); font-size: 12px; font-weight: 700; cursor: pointer; }
-    .category-button:hover { background: var(--sage); }
-    .category-button[aria-pressed="true"] { background: var(--accent); color: var(--accent-contrast); box-shadow: 3px 3px 0 var(--border); }
-    .list-heading { display: flex; justify-content: space-between; align-items: center; padding: 8px 2px 12px; color: var(--text); font-size: 12px; line-height: 1.3; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-    .list-heading p { margin: 0; }
-    .product-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
-    .product-card { min-width: 0; }
-    .product-card.is-highlighted .product-media { box-shadow: 6px 6px 0 var(--amber); }
-    .product-card.is-highlighted .product-info { box-shadow: 6px 6px 0 var(--amber); }
-    .product-media { position: relative; display: block; width: 100%; aspect-ratio: 1; border: 2px solid var(--border); background: var(--surface-soft); color: var(--text); overflow: hidden; text-decoration: none; }
-    .product-image { display: block; width: 100%; height: 100%; object-fit: contain; background: #fff; transition: transform .24s ease; }
-    .product-placeholder { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; background: var(--surface-soft); }
-    .product-placeholder::before, .product-placeholder::after { content: ""; position: absolute; width: 42%; aspect-ratio: 1; border: 2px solid var(--border); background: var(--pink); transform: rotate(45deg); }
-    .product-placeholder::before { left: -24%; top: -18%; }
-    .product-placeholder::after { right: -23%; bottom: -20%; background: var(--sage); }
-    .product-placeholder img { position: relative; z-index: 2; width: 38%; max-width: 150px; aspect-ratio: 1; object-fit: cover; border: 2px solid var(--border); }
-    .placeholder-sun { position: absolute; z-index: 1; width: 54%; aspect-ratio: 1; border: 2px solid var(--border); border-radius: 50%; background: var(--bg); }
-    .placeholder-sprig { position: absolute; z-index: 3; right: 9%; top: 7%; color: var(--amber); font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: clamp(38px, 11vw, 70px); line-height: 1; transform: rotate(12deg); }
-    .product-media-overlay { position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgb(53 102 105 / .92); color: #f6f1ed; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 24px; font-weight: 700; opacity: 0; transition: opacity .18s ease; }
-    .product-media:hover .product-media-overlay, .product-media:focus-visible .product-media-overlay { opacity: 1; }
-    .product-media:hover .product-image { transform: scale(1.025); }
-    .product-info { min-height: 142px; margin-top: -2px; padding: 14px 14px 13px; border: 2px solid var(--border); background: var(--surface); }
-    .product-category { margin: 0 0 5px; color: var(--dim); font-size: 10px; font-weight: 700; letter-spacing: .035em; text-transform: uppercase; }
-    .product-info h2 { margin: 0; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 22px; line-height: 1.08; letter-spacing: .01em; font-weight: 650; overflow-wrap: anywhere; }
-    .saved-host { margin: 6px 0 0; color: var(--dim); font-size: 10px; line-height: 1.3; font-weight: 650; overflow-wrap: anywhere; }
-    .row-actions { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 13px; }
-    .open-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 36px; border: 2px solid var(--border); padding: 0 10px; background: var(--accent); color: var(--accent-contrast); text-decoration: none; font-size: 11px; font-weight: 750; cursor: pointer; }
-    .open-button:hover { background: var(--sage); }
-    .state-panel { min-height: 200px; display: grid; place-items: center; align-content: center; gap: 12px; margin-right: 5px; border: 2px solid var(--border); background: var(--surface); box-shadow: var(--soft-offset); color: var(--dim); text-align: center; }
-    .state-panel strong { color: var(--text); font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 23px; }
-    .state-panel button { min-height: 42px; border: 2px solid var(--border); padding: 0 14px; background: var(--accent); color: var(--accent-contrast); font-weight: 700; cursor: pointer; }
-    .disclosure { margin: 28px 0 0; color: var(--dim); font-size: 12px; line-height: 1.5; }
-    .toast { position: fixed; z-index: 50; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); max-width: calc(100% - 32px); transform: translate(-50%, 18px); opacity: 0; pointer-events: none; padding: 12px 16px; border: 2px solid var(--border); background: var(--accent); color: var(--accent-contrast); box-shadow: 4px 4px 0 var(--border); font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: opacity .16s ease, transform .16s ease; }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
-    @media (min-width: 520px) and (max-width: 719px) {
-      .product-info { min-height: 154px; }
-    }
-    @media (min-width: 720px) {
-      .ledger-shell { padding: 30px 30px 100px; }
-      .brand-hero { margin-bottom: 34px; }
-      .banner-frame { box-shadow: 8px 8px 0 var(--text); }
-      .find-tools { display: grid; grid-template-columns: minmax(320px, .85fr) 1.4fr; gap: 16px; align-items: start; }
-      .category-list { padding-top: 0; }
-      .product-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 20px; }
-      .product-info { min-height: 156px; }
-      .product-info h2 { font-size: 23px; }
-    }
-    @media (max-width: 430px) {
-      .ledger-shell { padding-inline: 12px; }
-      .banner-frame { margin-right: 4px; box-shadow: 4px 4px 0 var(--text); }
-      .catalog-summary { display: block; margin-top: 18px; }
-      .catalog-summary .intro-copy { font-size: 13px; }
-      .search-field input { padding-right: 65px; }
-      .product-list { row-gap: 26px; }
-      .product-info { min-height: 0; }
-    }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .toast { transition: none; } .product-image { transition: none; } }
-  
-    .view-toggle { display: flex; align-items: center; gap: 10px; margin: 20px 0 4px; }
-    .view-toggle .view-label { font-weight: 700; }
-    .view-toggle button { font: inherit; border: 0; background: transparent; color: var(--text); padding: 4px 2px; font-weight: 700; cursor: pointer; }
-    .view-toggle button[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 3px; }
-    .view-toggle .view-sep { color: var(--dim); }
-    .product-list.is-list { display: flex; flex-direction: column; gap: 16px; }
-    .product-list.is-list .product-card { display: grid; grid-template-columns: 132px 1fr; }
-    .product-list.is-list .product-media { border-right-width: 0; }
-    .product-list.is-list .product-info { margin: 0 0 0 -2px; min-height: 0; }
-    @media (max-width: 430px) { .product-list.is-list .product-card { grid-template-columns: 104px 1fr; } }
-    .collection-section { margin: 26px 0 36px; }
-    .collection-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-    .collection-head h2 { font-family: "Sour Gummy", ui-rounded, system-ui, sans-serif; margin: 0; font-size: 26px; }
-    .collection-count { color: var(--dim); margin: 2px 0 10px; font-size: 14px; }
-    .collection-shelf { display: flex; gap: 16px; overflow-x: auto; padding: 8px 6px 16px; scrollbar-width: thin; scrollbar-color: var(--sage) var(--bg); }
-    .collection-shelf::-webkit-scrollbar { height: 8px; }
-    .collection-shelf::-webkit-scrollbar-track { background: var(--bg); }
-    .collection-shelf::-webkit-scrollbar-thumb { background: var(--sage); border-radius: 4px; }
-    .collection-shelf .product-card { flex: 0 0 210px; }
-    .see-all { font-weight: 700; color: var(--accent); text-decoration: none; white-space: nowrap; }
-    .see-all.shelf-end { align-self: center; flex: 0 0 auto; padding: 10px 16px; border: 2px solid var(--border); background: #fff; box-shadow: 3px 3px 0 var(--border); }
-    @media (max-width: 430px) { .collection-shelf .product-card { flex-basis: 168px; } .collection-head h2 { font-size: 22px; } }
+@font-face {
+  font-family: "Sour Gummy";
+  src: url("assets/sour-gummy.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("assets/poppins-regular.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacifico";
+  src: url("assets/pacifico-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  color-scheme: light;
+  --bg: #f6f1ed;
+  --surface: #fffaf7;
+  --surface-soft: #fad3bc;
+  --text: #356669;
+  --dim: #5a817d;
+  --border: #356669;
+  --accent: #f67e59;
+  --accent-contrast: #356669;
+  --sage: #99c1bb;
+  --amber: #fda009;
+  --pink: #f0a4d6;
+  --danger: #a63d35;
+  --focus: #fda009;
+  --radius: 0px;
+  --offset: 5px 5px 0 #356669;
+  --soft-offset: 5px 5px 0 #f0a4d6;
+  --signature: linear-gradient(140deg, #f0a4d6 20%, #fad3bc 70%);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--bg); scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Poppins", ui-rounded, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+.app-frame { min-height: 100%; background: var(--bg); }
+.ledger-shell { width: min(1040px, 100%); margin: 0 auto; padding: 16px 14px calc(86px + env(safe-area-inset-bottom)); }
+.brand-hero { margin-bottom: 12px; }
+.banner-frame { position: relative; display: flex; align-items: center; justify-content: center; aspect-ratio: 1206 / 390; margin: 0 5px 0 0; border: 2px solid var(--border); background-color: #f6f1ed; background-image: url("assets/product-links-banner-bg.jpg"); background-size: cover; background-position: center; background-repeat: no-repeat; box-shadow: var(--offset); overflow: hidden; }
+.banner-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; padding: clamp(14px, 4vw, 40px) clamp(8px, 2.5vw, 28px); text-align: center; }
+.brand-title { margin: 0; color: #356669; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: clamp(1.4rem, 8.5vw, 5.5rem); font-weight: 800; line-height: .95; letter-spacing: 0; white-space: nowrap; text-shadow: 4px 4px 0 #fad3bc; }
+.brand-pill { display: inline-flex; align-items: center; justify-content: center; margin-top: clamp(8px, 2.2vw, 20px); border: 0; border-radius: 999px; padding: 10px 30px; background: #f67e59; color: #fff; font-family: "Pacifico", cursive; font-size: 14px; font-weight: 400; line-height: 1; letter-spacing: .01em; text-decoration: none; white-space: nowrap; }
+.catalog-summary { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; margin: 22px 5px 0 0; padding: 2px 0 0; }
+.catalog-summary .intro-copy { margin: 0; max-width: 700px; color: var(--text); font-size: 14px; line-height: 1.55; }
+
+.find-tools { margin-bottom: 24px; }
+.search-filter-panel { margin: 0 5px 0 0; padding: 14px; border: 2px solid var(--border); background: linear-gradient(135deg, #fad3bc 0%, #f0a4d6 100%); box-shadow: 5px 5px 0 var(--sage); }
+.search-field { position: relative; display: flex; align-items: center; width: 100%; min-height: 58px; margin: 0; background: var(--surface); border: 2px solid var(--border); box-shadow: 4px 4px 0 var(--border); }
+.search-field > svg { position: absolute; left: 16px; color: var(--text); pointer-events: none; }
+.search-field input { width: 100%; min-width: 0; height: 56px; border: 0; padding: 0 72px 0 48px; background: transparent; color: var(--text); outline: none; font-size: 15px; }
+.search-field input::placeholder { color: var(--dim); opacity: 1; }
+.search-field:focus-within { box-shadow: 4px 4px 0 var(--border); }
+.clear-search { position: absolute; right: 8px; min-height: 40px; border: 0; padding: 0 9px; color: var(--text); background: transparent; font-size: 12px; font-weight: 700; cursor: pointer; }
+.category-list { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 14px; }
+.category-button { min-height: 40px; border: 2px solid var(--border); border-radius: 0; padding: 7px 12px; color: var(--text); background: var(--surface); font-size: 12px; font-weight: 700; cursor: pointer; }
+.category-button:hover { background: var(--sage); color: #fff; }
+.category-button[aria-pressed="true"] { background: var(--sage); color: #fff; box-shadow: 3px 3px 0 var(--border); }
+.view-toggle-row { display: flex; align-items: center; gap: 8px; padding-top: 3px; text-transform: none; letter-spacing: normal; }
+.view-toggle-label { font-size: 12px; font-weight: 400; color: var(--dim); }
+.view-toggle { display: inline-flex; align-items: center; gap: 8px; }
+.view-toggle-separator { font-size: 12px; color: var(--dim); }
+.view-toggle-button { padding: 2px 0; border: 0; background: transparent; color: var(--dim); font-size: 12px; font-weight: 400; cursor: pointer; }
+.view-toggle-button:hover { color: var(--text); }
+.view-toggle-button[aria-pressed="true"] { color: #356669; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.list-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 4px 2px 12px; color: var(--text); font-size: 12px; line-height: 1.3; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.list-heading-main { display: flex; flex-direction: column; min-width: 0; }
+.list-heading p { margin: 0; }
+.curated-find-count { font-weight: 900; -webkit-text-stroke: .2px currentColor; }
+.sort-label { flex: 0 0 auto; padding-top: 1px; }
+
+.product-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+.product-rows { display: flex; flex-direction: column; gap: 10px; }
+.product-row { display: flex; align-items: stretch; gap: 12px; min-width: 0; padding: 10px; border: 2px solid var(--border); background: var(--surface); }
+.product-row.is-highlighted { box-shadow: 6px 6px 0 var(--amber); }
+.row-thumb { flex: 0 0 96px; width: 96px; height: 96px; display: block; align-self: flex-start; border: 2px solid var(--border); background: linear-gradient(135deg, #f6f1ed 0%, #fad3bc 100%); overflow: hidden; text-decoration: none; }
+.row-thumb-image { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; background: transparent; }
+.row-info { flex: 1 1 auto; min-width: 0; padding-top: 1px; }
+.row-title-row { display: block; min-width: 0; }
+.row-title { display: inline; margin: 0; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 18px; line-height: 1.1; letter-spacing: .01em; font-weight: 650; overflow-wrap: anywhere; user-select: text; }
+.product-card { min-width: 0; }
+.product-card.is-highlighted .product-media { box-shadow: 6px 6px 0 var(--amber); }
+.product-card.is-highlighted .product-info { box-shadow: 6px 6px 0 var(--amber); }
+.product-media { position: relative; display: block; width: 100%; aspect-ratio: 1; border: 2px solid var(--border); background: linear-gradient(135deg, #f6f1ed 0%, #fad3bc 100%); color: var(--text); overflow: hidden; text-decoration: none; }
+.product-image { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; background: transparent; }
+.product-media-overlay { position: absolute; z-index: 5; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgb(53 102 105 / .92); color: #f6f1ed; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 24px; font-weight: 700; opacity: 0; transition: opacity .18s ease; }
+.view-product-label { display: inline; }
+.view-product-line { display: inline; }
+.view-product-line--second svg { display: inline-block; margin-left: 8px; vertical-align: middle; }
+.product-media:hover .product-media-overlay, .product-media:focus-visible .product-media-overlay { opacity: 1; }
+.product-media:hover .product-image { transform: none; }
+.product-info { min-height: 142px; margin-top: -2px; padding: 14px 14px 13px; border: 2px solid var(--border); background: var(--surface); }
+.product-category { margin: 0 0 5px; color: var(--dim); font-size: 10px; font-weight: 700; letter-spacing: .035em; text-transform: uppercase; }
+.product-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.product-title-row.row-title-row { display: block; }
+.product-title-row h2 { flex: 1 1 auto; min-width: 0; }
+.product-info h2 { margin: 0; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 22px; line-height: 1.08; letter-spacing: .01em; font-weight: 650; overflow-wrap: anywhere; }
+.saved-host { margin: 6px 0 0; color: var(--dim); font-size: 10px; line-height: 1.3; font-weight: 650; overflow-wrap: anywhere; }
+.product-row .saved-host { margin: 0; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 13px; }
+.open-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 36px; border: 2px solid var(--border); padding: 0 10px; background: #356669; color: #fffaf7; text-decoration: none; font-size: 11px; font-weight: 750; cursor: pointer; }
+.open-button svg { width: 16px; height: 16px; }
+.open-button:hover, .open-button:active { background: #99c1bb; color: #356669; }
+.row-actions-list { margin-top: 9px; }
+.state-panel { min-height: 200px; display: grid; place-items: center; align-content: center; gap: 12px; margin-right: 5px; border: 2px solid var(--border); background: var(--surface); box-shadow: var(--soft-offset); color: var(--dim); text-align: center; }
+.state-panel strong { color: var(--text); font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 23px; }
+.state-panel button { min-height: 42px; border: 2px solid var(--border); padding: 0 14px; background: var(--accent); color: var(--accent-contrast); font-weight: 700; cursor: pointer; }
+.disclosure { margin: 28px 0 0; color: var(--dim); font-size: 12px; line-height: 1.5; }
+.back-to-top { position: fixed; z-index: 20; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom)); display: grid; place-items: center; width: 48px; height: 48px; border: 2px solid var(--border); border-radius: 0; padding: 0; background: var(--surface-soft); color: var(--text); box-shadow: 5px 5px 0 var(--border); cursor: pointer; }
+.back-to-top:hover { background: var(--accent); }
+.back-to-top:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--border); }
+.back-to-top svg { width: 22px; height: 22px; }
+
+@media (min-width: 520px) and (max-width: 719px) {
+  .product-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .product-info { min-height: 154px; }
+}
+
+@media (min-width: 720px) {
+  .ledger-shell { padding: 30px 30px 100px; }
+  .brand-hero { margin-bottom: 14px; }
+  .banner-frame { box-shadow: 8px 8px 0 var(--text); }
+  .search-filter-panel { padding: 18px; }
+  .category-list { padding-top: 16px; }
+  .product-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 34px 20px; }
+  .product-info { min-height: 156px; }
+  .product-info h2 { font-size: 23px; }
+  .product-row .row-info { position: relative; padding-right: 224px; }
+  .product-row .row-actions-list { position: absolute; top: 19px; right: 0; justify-content: flex-end; margin-top: 0; }
+}
+
+@media (max-width: 719px) {
+  .product-media-overlay { inset: auto; top: 50%; left: 50%; transform: translate(-50%, -50%); width: max-content; max-width: calc(100% - 20px); padding: 8px 14px; font-size: 13px; font-weight: 600; line-height: 1.3; text-align: center; justify-content: center; }
+  .view-product-label { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.3; text-align: center; }
+  .view-product-line { display: block; line-height: 1.3; text-align: center; }
+  .view-product-line--second { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+  .view-product-line--second svg { width: 13px; height: 13px; margin-left: 0; vertical-align: middle; }
+}
+
+@media (max-width: 430px) {
+  .ledger-shell { padding-inline: 12px; }
+  .banner-frame { margin-right: 4px; box-shadow: 4px 4px 0 var(--text); }
+  .catalog-summary { display: block; margin-top: 18px; }
+  .catalog-summary .intro-copy { font-size: 13px; }
+  .search-field input { padding-right: 65px; }
+  .product-list { row-gap: 26px; }
+  .product-info { min-height: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-media-overlay, .back-to-top { transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* Collections view */
+.collections-view { display: flex; flex-direction: column; gap: 32px; }
+.collection-section { min-width: 0; --collection-shadow: var(--pink); }
+.collection-section:nth-child(6n + 2) { --collection-shadow: var(--amber); }
+.collection-section:nth-child(6n + 3) { --collection-shadow: var(--accent); }
+.collection-section:nth-child(6n + 4) { --collection-shadow: var(--sage); }
+.collection-section:nth-child(6n + 5) { --collection-shadow: var(--surface-soft); }
+.collection-section:nth-child(6n + 6) { --collection-shadow: var(--border); }
+.collection-header { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 0 2px 13px; background: transparent; }
+.collection-heading-group { min-width: 0; }
+.collection-header h2 { margin: 0; font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: clamp(24px, 7vw, 34px); font-weight: 700; line-height: 1; }
+.collection-heading-group p { margin: 5px 0 0; color: var(--dim); font-size: 11px; font-weight: 750; line-height: 1.25; }
+.collection-see-all-link { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-height: 32px; border: 0; padding: 4px 0; background: transparent; color: var(--accent); box-shadow: none; font-size: 12px; font-weight: 750; line-height: 1; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.collection-see-all-link svg { width: 13px; height: 13px; }
+.collection-see-all-link:hover { color: var(--text); }
+.collection-shelf-shell { position: relative; width: 100%; min-width: 0; overflow: hidden; }
+.collection-scroll-arrow { display: none; }
+.collection-items { display: flex; width: 100%; min-width: 0; gap: 14px; padding: 0 7px 8px 0; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; scrollbar-width: none; }
+.collection-items::-webkit-scrollbar { display: none; }
+.collection-item { flex: 0 0 min(72vw, 244px); display: flex; flex-direction: column; min-width: 0; padding: 0 0 12px; border: 2px solid var(--border); background: var(--surface); scroll-snap-align: start; box-shadow: 6px 6px 0 var(--collection-shadow); }
+.collection-see-all-tile { flex: 0 0 152px; align-self: center; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; min-height: 72px; border: 0; padding: 14px 18px; background: transparent; color: var(--accent); box-shadow: none; scroll-snap-align: center; cursor: pointer; text-align: center; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; white-space: nowrap; }
+.collection-see-all-tile > span { font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 25px; font-weight: 750; line-height: 1; }
+.collection-see-all-tile svg { flex: 0 0 auto; width: 21px; height: 21px; }
+.collection-see-all-tile:hover { color: var(--text); }
+.collection-thumb { position: relative; display: block; width: 100%; aspect-ratio: 1; border-bottom: 2px solid var(--border); background: linear-gradient(135deg, #f6f1ed 0%, #fad3bc 100%); color: var(--surface); overflow: hidden; }
+.collection-thumb img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; background: transparent; }
+.collection-thumb > span { position: absolute; right: 5px; bottom: 5px; display: grid; place-items: center; width: 25px; height: 25px; background: rgb(53 102 105 / .94); }
+.collection-thumb svg { width: 13px; height: 13px; }
+.collection-item-info { width: 100%; min-width: 0; padding: 12px 12px 0; }
+.collection-title-row { align-items: flex-start; }
+.collection-title-row > a { flex: 1 1 auto; min-width: 0; color: var(--text); font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 18px; font-weight: 650; line-height: 1.08; text-decoration: none; overflow-wrap: anywhere; }
+.collection-title-row > a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.collection-item .saved-host { margin-top: 1px; }
+.collection-actions { margin-top: 8px; }
+
+@media (min-width: 720px) {
+  .brand-pill { margin-top: clamp(12px, 2.4vw, 24px); padding: 14px 40px; font-size: 19px; }
+  .collections-view { gap: 40px; }
+  .collection-header { padding: 0 2px 16px; }
+  .collection-items { gap: 18px; padding-bottom: 9px; scrollbar-width: thin; scrollbar-color: var(--sage) var(--bg); }
+  .collection-items::-webkit-scrollbar { display: block; height: 6px; }
+  .collection-items::-webkit-scrollbar-track { background: var(--bg); }
+  .collection-items::-webkit-scrollbar-thumb { border: 1px solid var(--bg); background: var(--sage); }
+  .collection-item { flex-basis: 232px; }
+  .collection-see-all-tile { flex-basis: 160px; }
+  .collection-title-row > a { font-size: 20px; }
+  .collection-scroll-arrow {
+    position: absolute;
+    z-index: 8;
+    top: calc(50% - 25px);
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid #356669;
+    border-radius: 0;
+    padding: 0;
+    background: #fda009;
+    color: #356669;
+    box-shadow: 5px 5px 0 #356669;
+    cursor: pointer;
+  }
+  .collection-scroll-arrow:hover { background: var(--accent); }
+  .collection-scroll-arrow:active { translate: 3px 3px; box-shadow: 2px 2px 0 #356669; }
+  .collection-scroll-arrow svg { width: 22px; height: 22px; }
+  .collection-scroll-arrow--left { left: 10px; }
+  .collection-scroll-arrow--left svg { transform: rotate(180deg); }
+  .collection-scroll-arrow--right { right: 14px; }
+}
   </style>
 </head>
 <body>
-  <div class="app-frame">
+<div class="app-frame">
     <main class="ledger-shell">
-      <header class="brand-hero">
-        <h1 class="sr-only">Product Links</h1>
+      <header class="brand-hero" id="brandHero">
         <div class="banner-frame">
-          <img class="brand-banner" src="assets/product-links-banner.png" alt="Product Links by @cozyhobbytime, surrounded by colorful punch needle and tufting artwork" />
+          <div class="banner-content">
+            <h1 class="brand-title">PRODUCT LINKS</h1>
+            <a class="brand-pill" href="https://www.youtube.com/@cozyhobbytime" target="_blank" rel="noopener">@cozyhobbytime</a>
+          </div>
         </div>
         <div class="catalog-summary">
           <p class="intro-copy">Browse the notebooks, pens, craft supplies, desk gear, and everyday tools I use and recommend.</p>
         </div>
       </header>
 
-      <section id="findTools" class="find-tools" aria-label="Find products">
-        <label class="search-field">
-          <span class="sr-only">Search products</span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
-          <input id="search" type="search" placeholder="Search product, category, or store" autocomplete="off" />
-          <button id="clearSearch" class="clear-search" type="button" hidden>Clear</button>
-        </label>
-        <div id="categories" class="category-list" aria-label="Filter by category"></div>
+      <section class="find-tools" aria-label="Find products">
+        <div class="search-filter-panel">
+          <label class="search-field">
+            <span class="sr-only">Search products</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+            <input id="search" type="search" autocomplete="off" aria-label="Search products" />
+            <button id="clearSearch" class="clear-search" type="button" hidden>Clear</button>
+          </label>
+          <div id="categories" class="category-list" aria-label="Filter by category"></div>
+        </div>
       </section>
 
-      <div class="view-toggle" role="group" aria-label="View as">
-        <span class="view-label">View as</span>
-        <button type="button" id="viewCollections" aria-pressed="true">Collections</button>
-        <span class="view-sep" aria-hidden="true">|</span>
-        <button type="button" id="viewGallery" aria-pressed="false">Gallery</button>
-        <span class="view-sep" aria-hidden="true">|</span>
-        <button type="button" id="viewList" aria-pressed="false">List</button>
+      <div class="list-heading" id="productListHeading">
+        <div class="list-heading-main">
+          <p class="curated-find-count" id="resultCount" aria-live="polite">109 curated finds</p>
+          <div class="view-toggle-row">
+            <span class="view-toggle-label" id="viewToggleLabel">View as</span>
+            <div class="view-toggle" role="group" aria-labelledby="viewToggleLabel">
+              <button type="button" class="view-toggle-button" id="viewCollections" aria-pressed="true" aria-label="Collections view">Collections</button>
+              <span class="view-toggle-separator" aria-hidden="true">|</span>
+              <button type="button" class="view-toggle-button" id="viewGallery" aria-pressed="false" aria-label="Gallery view">Gallery</button>
+              <span class="view-toggle-separator" aria-hidden="true">|</span>
+              <button type="button" class="view-toggle-button" id="viewList" aria-pressed="false" aria-label="List view">List</button>
+            </div>
+          </div>
+        </div>
+        <span class="sort-label" id="sortLabel">By collection</span>
       </div>
-      <section id="collectionsView" aria-label="Collections" hidden></section>
 
-      <div class="list-heading" id="listHeading"><p id="resultCount" aria-live="polite">109 curated finds</p><span>A–Z</span></div>
-      <section id="productList" class="product-list" aria-label="Product links"></section>
+      <section id="collectionsView" class="collections-view" aria-label="Product collections" hidden></section>
+      <section id="productRows" class="product-rows" aria-label="Saved product links" hidden></section>
+      <section id="productGallery" class="product-list" aria-label="Saved product links" hidden></section>
       <section id="emptyState" class="state-panel" hidden>
         <strong>No matching products.</strong>
         <button id="resetFilters" type="button">Clear filters</button>
@@ -187,330 +308,327 @@
       <p class="disclosure">Some links may be affiliate links, which means I may earn a commission at no extra cost to you.</p>
     </main>
   </div>
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
+  <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"></path></svg>
+  </button>
   <script>
-    const products = [
-      [91,"4mm seed beads","Crafts & supplies","https://link.amazon/B0gyJd89q","assets/products/product-91-4mm-seed-beads.webp","4mm seed beads"],
-      [47,"A5 dot grid media journal notebook","Notebooks & planners","https://link.amazon/B0esozwcv","assets/products/product-47-a5-dot-grid-media-journal-notebook.webp","A5 dot grid media journal notebook"],
-      [19,"A5 fabric notebook cover","Covers & organizers","https://s.click.aliexpress.com/e/_c37L1VhT","assets/products/product-19-a5-fabric-notebook-cover.webp","A5 fabric notebook cover"],
-      [2,"A5 traveler's notebook cover","Covers & organizers","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1098502&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F4322942323%2Fengraved-leather-notebook-cover%3Fref%3Dyr_purchases","assets/products/product-2-a5-traveler-s-notebook-cover.webp","A5 traveler's notebook cover"],
-      [4,"A6 PU leather 6 ring binder","Covers & organizers","https://link.amazon/B0eFX85Zd","assets/products/product-4-a6-pu-leather-6-ring-binder.webp","A6 PU leather 6 ring binder"],
-      [11,"Adhesive card holder","Covers & organizers","https://link.amazon/B0d8ykjWc","assets/products/adhesive-card-holder.jpg","Adhesive card holder"],
-      [5,"Adhesive pen loop","Covers & organizers","https://link.amazon/B0cxVQIvB","assets/products/product-5-adhesive-pen-loop.webp","Adhesive pen loop"],
-      [6,"Bamboo file organizer","Covers & organizers","https://link.amazon/B0elJ6VxH","assets/products/product-6-bamboo-file-organizer.webp","Bamboo file organizer"],
-      [84,"Bernat blanket BIG yarn","Crafts & supplies","https://link.amazon/B0eDJJpWt","assets/products/product-84-bernat-blanket-big-yarn.webp","Bernat blanket BIG yarn"],
-      [54,"Black muji notebook cover","Covers & organizers","https://link.amazon/B05NDmp4K","assets/products/muji-cover.jpg","MUJI notebook cover"],
-      [8,"Blocking board","Crafts & supplies","https://link.amazon/B0gnn3ttT","assets/products/blocking-board.jpg","Wooden crochet blocking board with pins"],
-      [71,"Blunt tip syringe","Crafts & supplies","https://link.amazon/B03NCUv3r","assets/products/product-71-blunt-tip-syringe.webp","Blunt tip syringe"],
-      [9,"Canon ivy 2 mini photo printer","Desk & tech","https://link.amazon/B01u84oEN","assets/canon-ivy-2.jpg","Canon Ivy 2 compact white photo printer"],
-      [10,"Canon selphy QX20","Desk & tech","https://link.amazon/B09dHzi0E","assets/canon-selphy-qx20.png","Canon Selphy QX20 compact white photo printer"],
-      [12,"Clear vinyl sticker paper","Crafts & supplies","https://link.amazon/B09yRQMjC","assets/products/product-12-clear-vinyl-sticker-paper.webp","Clear vinyl sticker paper"],
-      [96,"Comfy desk chair","Desk & tech","https://link.amazon/B0fkuoGxm","assets/products/product-96-comfy-desk-chair.webp","Comfy desk chair"],
-      [109,"Crochet Hooks Set","Crafts & supplies","https://link.amazon/B01aM4trS","",""],
-      [13,"Date stamp with wooden handle","Pens & ink","https://link.amazon/B02RM6aAy","assets/products/date-stamp.webp","Wooden-handle roller date stamp"],
-      [14,"Delfonics pouch","Covers & organizers","https://link.amazon/B00UPchQP","assets/products/delfonics-pouch.webp","Delfonics water-resistant utility pouch"],
-      [15,"Diamine 30ml ink","Pens & ink","https://link.amazon/B07oJgBgX","assets/products/diamine-30ml.webp","Diamine 30 ml fountain pen ink bottle"],
-      [104,"Diamond painting coaster kit","Crafts & supplies","https://link.amazon/B09VZasGj","",""],
-      [16,"Dingbats A6 pocket notebook","Notebooks & planners","https://link.amazon/B0aCXerpp","assets/products/product-16-dingbats-a6-pocket-notebook.webp","Dingbats A6 pocket notebook"],
-      [17,"Elastic cord","Crafts & supplies","https://tinyurl.com/w4hu8xpr","assets/products/product-17-elastic-cord.webp","Elastic cord"],
-      [21,"Field Notes dupes","Notebooks & planners","https://link.amazon/B0bhAjNhY","assets/products/product-21-field-notes-dupe-notebooks.webp","Field Notes dupe notebooks"],
-      [20,"Field notes notebook","Notebooks & planners","https://link.amazon/B0gPY0fQ7","assets/products/field-notes.webp","Field Notes Original Kraft memo books"],
-      [22,"FlexiSpot E6 standing desk","Desk & tech","https://link.amazon/B0eVH96vf","assets/products/product-22-flexispot-e6-standing-desk.webp","FlexiSpot E6 Standing Desk"],
-      [24,"Fruits & veggies crochet pattern","Crafts & supplies","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1099959&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Fstrfrnt%2Fwfsftrhotomqzg0v%2Fshare%3Furl%3Dhttps%253A%252F%252Fwww.etsy.com%252Flisting%252F1152210632%252F50-crochet-pattern-bundle-ebook-pdf%26listing_page_id%3D1152210632","assets/products/product-24-fruits-veggies-crochet-pattern.webp","Fruits & veggies crochet pattern"],
-      [107,"Green pencil case","Covers & organizers","https://link.amazon/B0192yFmv","",""],
-      [108,"Halloween village plastic canvas kit","Crafts & supplies","https://link.amazon/B06JLpePW","",""],
-      [99,"Hanging closet organizer","Covers & organizers","https://link.amazon/B0bAPDU8G","assets/products/product-99-hanging-closet-organizer.webp","Hanging closet organizer"],
-      [98,"Hanging door organizer","Covers & organizers","https://link.amazon/B06XmkMLH","assets/products/product-98-hanging-door-organizer.webp","Hanging door organizer"],
-      [27,"Headphone stand","Desk & tech","https://link.amazon/B01HnvmWt","assets/products/product-27-headphone-stand.webp","Headphone stand"],
-      [29,"Hobonichi A6 graph notebook","Notebooks & planners","https://link.amazon/B06sJ0bt3","assets/products/product-29-hobonichi-a6-graph-notebook.webp","Hobonichi A6 graph notebook"],
-      [30,"Hobonichi cousin","Notebooks & planners","https://link.amazon/B09DVGYjP","assets/hobonichi-cousin.jpg","Open Hobonichi Cousin planner showing its daily page layout"],
-      [31,"Hobonichi day-free","Notebooks & planners","https://link.amazon/B0096G6iz","assets/products/hobonichi-dayfree.webp","Hobonichi Day-Free planner"],
-      [92,"IKEA alex drawers","Desk & tech","https://link.amazon/B0fTXoAOJ","assets/products/ikea-alex.jpg","White IKEA ALEX drawer unit"],
-      [95,"IKEA EKENABBEN closet shelves","Covers & organizers","https://link.amazon/B024VkXEz","assets/products/product-95-ikea-ekenabben-closet-shelves.webp","IKEA EKENABBEN closet shelves"],
-      [93,"IKEA SKÅDIS pegboard","Desk & tech","https://link.amazon/B02KdQwys","assets/products/ikea-skadis.webp","White IKEA SKÅDIS pegboard"],
-      [94,"IKEA UPPLYST cloud lamps","Desk & tech","https://link.amazon/B09gyZSIh","assets/products/ikea-upplyst.webp","IKEA UPPLYST cloud wall lamp"],
-      [32,"Jinaho 100 centennial fountain pens","Pens & ink","https://s.click.aliexpress.com/e/_omtjp4J","assets/products/jinhao-100.webp","Jinhao 100 Centennial fountain pen"],
-      [34,"Kindle paperwhite","E-readers & accessories","https://link.amazon/B07zRCkZi","assets/products/kindle-paperwhite.webp","Black Kindle Paperwhite e-reader"],
-      [35,"KnotMonster sushi crochet patterns","Crafts & supplies","https://click.linksynergy.com/deeplink?id=61cuW*0Y5Mc&mid=54066&murl=https%3A%2F%2Fwww.etsy.com%2Flisting%2F1011508123%2Fsushi-food-bundle-crochet-patterns-ebook%3Fls%3Dr%26sr_prefetch%3D1%26pf_from%3Dshop_home%26ref%3Ditems-pagination-9%26pro%3D1%26sts%3D1%26dd%3D1%26content_source%3D794e56d9a92b6b123e885237829e1ef5%25253ALTd289c2b89609baeaee61f44e73b8a73db7e0011e%26logging_key%3D794e56d9a92b6b123e885237829e1ef5%253ALTd289c2b89609baeaee61f44e73b8a73db7e0011e","assets/products/product-35-knotmonster-sushi-crochet-patterns.webp","KnotMonster sushi crochet patterns"],
-      [36,"Kobo libra colour","E-readers & accessories","https://link.amazon/B0hTSIEMR","assets/kobo-libra-colour.png","Black Kobo Libra Colour e-reader with color book covers on screen"],
-      [68,"Kobo screen protector","E-readers & accessories","https://link.amazon/B06FGLM9G","assets/products/product-68-kobo-screen-protector.webp","Kobo screen protector"],
-      [90,"Latch hook canvas","Crafts & supplies","https://link.amazon/B02pzedLw","assets/products/product-90-latch-hook-canvas.webp","Latch hook canvas"],
-      [39,"Leather hole punch","Crafts & supplies","https://tinyurl.com/56d5nukd","assets/products/product-39-leather-hole-punch.webp","Leather hole punch"],
-      [65,"Leather pocket notebook cover","Covers & organizers","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1098440&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F781389036%2Fpersonalized-groomsmen-gift-field-notes%3Fref%3Dyr_purchases","assets/products/product-65-leather-pocket-notebook-cover.webp","Leather pocket notebook cover"],
-      [18,"Leather stamp embossing kit","Crafts & supplies","https://link.amazon/B0iYBypMZ","assets/products/leather-stamp.webp","Leather stamp embossing tool kit"],
-      [49,"LG 34” monitor","Desk & tech","https://link.amazon/B08lHl7om","assets/products/product-49-lg-34-monitor.webp","LG 34” Monitor"],
-      [41,"LIFE A5 grid notebook","Notebooks & planners","https://link.amazon/B0hU6L70R","assets/products/life-a5.webp","LIFE Noble A5 grid notebook"],
-      [42,"LIFE A7 grid notebook","Notebooks & planners","https://link.amazon/B032JyJQl","assets/products/life-a7.webp","LIFE Noble A7 grid notebook"],
-      [43,"LIFE B6 plain notebook","Notebooks & planners","https://link.amazon/B000vMxOW","assets/products/life-b6.jpg","LIFE Noble B6 plain notebook"],
-      [45,"Majohn A1 fountain pen","Pens & ink","https://s.click.aliexpress.com/e/_c2QjsXFp","assets/products/majohn-a1.jpg","Majohn A1 retractable fountain pen"],
-      [46,"Matcha keycaps","Desk & tech","https://s.click.aliexpress.com/e/_c3psWBCV","assets/products/matcha-keycaps.webp","Cream and matcha green keyboard keycaps"],
-      [33,"Mechanical keyboard","Desk & tech","https://link.amazon/B098nczpK","assets/products/product-33-mechanical-keyboard.webp","Mechanical Keyboard"],
-      [25,"Metallic acrylic paint","Crafts & supplies","https://temu.to/k/pik4rgho07w","assets/products/product-25-gold-acrylic-paint.webp","Gold acrylic paint"],
-      [1,"Midori A5 transparent cover","Covers & organizers","https://link.amazon/B00hPoRDa","assets/products/midori-a5-cover.webp","Midori MD A5 transparent cover"],
-      [101,"Midori MD A5 plain paper notebook","Notebooks & planners","https://link.amazon/B03jGShh0","assets/products/midori-md-a5.webp","Midori MD A5 plain notebook"],
-      [7,"Midori traveler's notebook blank refill","Notebooks & planners","https://link.amazon/B062tC4u2","assets/products/midori-blank-refill.webp","Traveler's Notebook regular blank refill 003"],
-      [44,"Midori traveler's notebook lined refill","Notebooks & planners","https://link.amazon/B0bS6sSPv","assets/products/product-44-midori-traveler-s-notebook-lined-refill.webp","Midori Traveler's Notebook lined refill"],
-      [48,"Mini rubber stamps","Pens & ink","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1100254&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F695282131%2Fmini-rubber-stamp-book%3Fref%3Dyr_purchases","assets/products/mini-rubber-stamp.webp","Mini book-shaped rubber stamp"],
-      [50,"Monitor lightbar","Desk & tech","https://link.amazon/B04lINmAp","assets/products/monitor-lightbar.webp","BenQ ScreenBar monitor light"],
-      [51,"Moterm standard TN leather cover","Covers & organizers","https://link.amazon/B0fh5a43a","assets/products/product-51-moterm-standard-tn-leather-cover.webp","Moterm Standard TN leather cover"],
-      [53,"Mouse and wrist pad","Desk & tech","https://link.amazon/B0eM47MbQ","assets/products/product-53-mouse-and-wrist-pad.webp","Mouse and wrist pad"],
-      [55,"MUJI 0.5mm pen","Pens & ink","https://link.amazon/B03PV25Ww","assets/products/muji-pen.webp","MUJI smooth gel ink ballpoint pens"],
-      [56,"Mushroom guy pattern","Crafts & supplies","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1100337&type=10&subid=0&murl=https%3A%2F%2Fwww.etsy.com%2Fstrfrnt%2Fwfsftrhotomqzg0v%2Fshare%3Furl%3Dhttps%253A%252F%252Fwww.etsy.com%252Flisting%252F1793293648%252Fmushroom-guy-critter-stitch-crochet%26listing_page_id%3D1793293648","assets/products/mushroom-pattern.webp","Mushroom Guy crochet pattern"],
-      [3,"Ox knight yellow A5 leather cover","Covers & organizers","https://link.amazon/B05atfFFO","assets/products/product-3-ox-knight-yellow-a5-leather-cover.webp","Ox Knight yellow A5 leather cover"],
-      [106,"Paint by number canvas kit","Crafts & supplies","https://link.amazon/B0a1XIlZS","",""],
-      [58,"Papermate felt tip pen","Pens & ink","https://link.amazon/B0dbl2vee","assets/products/product-58-papermate-felt-tip-pen.webp","Papermate Felt Tip Pen"],
-      [79,"Passport-size wallet/card holder","Covers & organizers","https://link.amazon/B08hDj3HC","assets/products/product-79-passport-size-wallet-card-holder.webp","Passport-size wallet/card holder"],
-      [60,"Pentel fude touch brush pen","Pens & ink","https://link.amazon/B01OU0KNI","assets/products/pentel-fude.webp","Pentel Fude Touch brush sign pens"],
-      [61,"Pilot iroshizuku 15ml inks","Pens & ink","https://s.click.aliexpress.com/e/_c4FaD1yz","assets/products/pilot-iro-30.webp","Pilot Iroshizuku 15 ml fountain pen ink"],
-      [62,"Pilot iroshizuku 50ml ink","Pens & ink","https://link.amazon/B05VtK73t","assets/products/pilot-iro-50.jpg","Pilot Iroshizuku 50 ml fountain pen ink"],
-      [63,"Pilot kakuno fountain pen","Pens & ink","https://link.amazon/B015CO6vy","assets/pilot-kakuno.png","Pilot Kakuno fountain pens in assorted colors"],
-      [64,"Pilot vanishing point","Pens & ink","https://link.amazon/B0gQMPCxW","assets/products/pilot-vp.webp","Pilot Vanishing Point fountain pen"],
-      [28,"Pink headset","Desk & tech","https://link.amazon/B0fq9Ndxx","assets/products/product-28-headset.webp","Headset"],
-      [102,"Printable clear sticker paper","Crafts & supplies","https://link.amazon/B0hasgquh","assets/products/product-102-printable-clear-sticker-paper.webp","Printable Clear Sticker Paper"],
-      [66,"Prismacolor colored pencils","Crafts & supplies","https://link.amazon/B01D7yfcc","assets/products/product-66-prismacolor-colored-pencils.webp","Prismacolor colored pencils"],
-      [105,"Punch needle tool kit","Crafts & supplies","https://link.amazon/B08IgKpoX","",""],
-      [37,"RENAISSER kobo stylus","E-readers & accessories","https://link.amazon/B073aVzjv","assets/products/product-37-renaisser-kobo-stylus.webp","RENAISSER Kobo stylus"],
-      [26,"Rolife mini greenhouse kit","Crafts & supplies","https://link.amazon/B03fLljnp","assets/products/rolife-greenhouse.webp","Rolife Cathy's Flower House miniature kit"],
-      [67,"Rotating pen organizer","Covers & organizers","https://link.amazon/B05oawJJ1","assets/products/rotating-pen-organizer.jpg","Rotating desktop pen organizer"],
-      [40,"Sew mini treats felt plushie book","Crafts & supplies","https://link.amazon/B0hbQ1Wv8","assets/products/product-40-sew-mini-treats-felt-plushie-book.webp","Sew Mini Treats felt plushie book"],
-      [69,"Shrink plastic","Crafts & supplies","https://link.amazon/B09TbNJIz","assets/products/shrink-plastic.jpg","Clear shrink plastic craft sheets"],
-      [97,"Smart power strip","Desk & tech","https://link.amazon/B01ieXLLx","assets/products/kasa-hs300.jpg","TP-Link Kasa HS300 smart power strip"],
-      [70,"Stalogy 1/2 year notebook","Notebooks & planners","https://link.amazon/B0bkj2EYz","assets/products/stalogy-half.webp","STALOGY half-year notebook"],
-      [88,"Sterling ink complete common planner","Notebooks & planners","https://sterling-ink.com?referralCode=2xr74WjGUs5","assets/products/sterling-ink.webp","Sterling Ink Complete Common Planner"],
-      [100,"Task lamp","Desk & tech","https://link.amazon/B0fU89QnI","assets/products/product-100-task-lamp.webp","Task Lamp"],
-      [72,"Tombow dual brush pens","Pens & ink","https://link.amazon/B04iwGMvk","assets/products/product-72-tombow-dual-brush-pens.webp","Tombow Dual Brush Pens"],
-      [73,"Tomoe river notebook","Notebooks & planners","https://link.amazon/B07hyNsgq","assets/products/tomoe-river.webp","Sakae Tomoe River notebook"],
-      [59,"Travelers company passport-size notebooks","Notebooks & planners","https://link.amazon/B04hZfCqC","assets/products/product-59-travelers-company-passport-size-notebooks.webp","Travelers Company passport-size notebooks"],
-      [74,"TWSBI diamond 580 fountain pen","Pens & ink","https://link.amazon/B0cPBMMRw","assets/products/twsbi-580.webp","TWSBI Diamond 580 clear fountain pen"],
-      [75,"TWSBI eco fountain pen","Pens & ink","https://link.amazon/B0cv9r7dp","assets/twsbi-eco.jpg","White and clear TWSBI Eco fountain pen"],
-      [89,"TWSBI eco white and rose gold nib F","Pens & ink","https://link.amazon/B0cF0M88Z","assets/products/twsbi-rose-gold.webp","TWSBI Eco white and rose gold fountain pen"],
-      [76,"Uniball one P gel pen","Pens & ink","https://link.amazon/B07Jgqa35","assets/products/uniball-one-p.png","Uni-ball One P gel pen"],
-      [52,"USB mouse","Desk & tech","https://link.amazon/B03JFGp2D","assets/products/product-52-usb-mouse.webp","USB Mouse"],
-      [77,"UV resin","Crafts & supplies","https://link.amazon/B036eEXEZ","assets/products/product-77-uv-resin.webp","UV resin"],
-      [38,"Veg tanned leather panels","Crafts & supplies","https://www.rmleathersupply.com/products/badalassi-carlo-minerva-smooth-veg-tanned-leather-4-5oz-1-8mm?variant=32319595937901","assets/products/product-38-veg-tanned-leather-panels.webp","Veg Tanned Leather Panels"],
-      [78,"Vertical pen storage","Covers & organizers","https://link.amazon/B05ypYyZQ","assets/products/vertical-pen-storage.jpg","Multi-layer vertical pen organizer"],
-      [103,"White printable vinyl sticker paper","Crafts & supplies","https://link.amazon/B09ECMT0o","assets/products/white-vinyl-paper.webp","White printable vinyl sticker paper"],
-      [57,"Wooden craft storage box","Covers & organizers","https://link.amazon/B0hosqKSh","assets/products/product-57-organizer-storage-box.webp","Wooden craft storage box"],
-      [80,"xTeink clear cover","Covers & organizers","https://link.amazon/B0e7u8UlI","assets/products/product-80-xteink-clear-cover.webp","xTeink clear cover"],
-      [81,"xTeink X3","E-readers & accessories","https://go.sjv.io/xJoX4y","assets/products/product-81-xteink-x3.webp","xTeink X3"],
-      [82,"xTeink X4","E-readers & accessories","https://go.sjv.io/ZVz64W","assets/products/product-82-xteink-x4.webp","xTeink X4"],
-      [83,"xTeink X4 Pro","E-readers & accessories","https://go.sjv.io/7XKLj5","assets/products/product-83-xteink-x4-pro.webp","xTeink X4 Pro"],
-      [85,"Zebra 0.5mm vintage colors ballpoint pen","Pens & ink","https://link.amazon/B01H5B1v4","assets/products/product-85-zebra-clip-0-5mm-ballpoint-pen.webp","Zebra 0.5mm vintage colors ballpoint pen"],
-      [86,"Zebra sarasa mark-on 0.4mm gel pen","Pens & ink","https://link.amazon/B0hYVxtDL","assets/products/zebra-sarasa.webp","Zebra Sarasa Clip 0.4 mm gel pen"],
-      [87,"ZINK paper","Desk & tech","https://link.amazon/B01sVujBZ","assets/products/product-87-zink-paper.webp","ZINK paper"],
-      [23,"Zippered fountain pen case","Covers & organizers","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1098386&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F1889918683%2Fpersonalization-crazy-horse-leather-pen%3Fref%3Duser_profile%26pro%3D1","assets/products/pen-case.webp","Crazy Horse leather fountain pen case"]
-    ].map(([id,name,category,url,image,alt]) => ({id,name,category,url,image,alt}));
+const LOGO = 'assets/cozy-hobby-time-logo.jpg';
+const products = [[91,"4mm seed beads","Crafts & supplies","https://link.amazon/B0gyJd89q","assets/products/product-91-4mm-seed-beads.webp","4mm seed beads"],[47,"A5 dot grid media journal notebook","Notebooks & planners","https://link.amazon/B0esozwcv","assets/products/product-47-a5-dot-grid-media-journal-notebook.webp","A5 dot grid media journal notebook"],[19,"A5 fabric notebook cover","Covers & organizers","https://s.click.aliexpress.com/e/_c37L1VhT","assets/products/product-19-a5-fabric-notebook-cover.webp","A5 fabric notebook cover"],[2,"A5 traveler's notebook cover","Covers & organizers","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1098502&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F4322942323%2Fengraved-leather-notebook-cover%3Fref%3Dyr_purchases","assets/products/product-2-a5-traveler-s-notebook-cover.webp","A5 traveler's notebook cover"],[4,"A6 PU leather 6 ring binder","Covers & organizers","https://link.amazon/B0eFX85Zd","assets/products/product-4-a6-pu-leather-6-ring-binder.webp","A6 PU leather 6 ring binder"],[11,"Adhesive card holder","Covers & organizers","https://link.amazon/B0d8ykjWc","assets/products/adhesive-card-holder.jpg","Adhesive card holder"],[5,"Adhesive pen loop","Covers & organizers","https://link.amazon/B0cxVQIvB","assets/products/product-5-adhesive-pen-loop.webp","Adhesive pen loop"],[6,"Bamboo file organizer","Covers & organizers","https://link.amazon/B0elJ6VxH","assets/products/product-6-bamboo-file-organizer.webp","Bamboo file organizer"],[84,"Bernat blanket BIG yarn","Crafts & supplies","https://link.amazon/B0eDJJpWt","assets/products/product-84-bernat-blanket-big-yarn.webp","Bernat blanket BIG yarn"],[54,"Black muji notebook cover","Covers & organizers","https://link.amazon/B05NDmp4K","assets/products/muji-cover.jpg","MUJI notebook cover"],[8,"Blocking board","Crafts & supplies","https://link.amazon/B0gnn3ttT","assets/products/blocking-board.jpg","Wooden crochet blocking board with pins"],[71,"Blunt tip syringe","Crafts & supplies","https://link.amazon/B03NCUv3r","assets/products/product-71-blunt-tip-syringe.webp","Blunt tip syringe"],[9,"Canon ivy 2 mini photo printer","Desk & tech","https://link.amazon/B01u84oEN","assets/canon-ivy-2.jpg","Canon Ivy 2 compact white photo printer"],[10,"Canon selphy QX20","Desk & tech","https://link.amazon/B09dHzi0E","assets/canon-selphy-qx20.png","Canon Selphy QX20 compact white photo printer"],[12,"Clear vinyl sticker paper","Crafts & supplies","https://link.amazon/B09yRQMjC","assets/products/product-12-clear-vinyl-sticker-paper.webp","Clear vinyl sticker paper"],[96,"Comfy desk chair","Desk & tech","https://link.amazon/B0fkuoGxm","assets/products/product-96-comfy-desk-chair.webp","Comfy desk chair"],[109,"Crochet Hooks Set","Crafts & supplies","https://link.amazon/B01aM4trS","",""],[13,"Date stamp with wooden handle","Pens & ink","https://link.amazon/B02RM6aAy","assets/products/date-stamp.webp","Wooden-handle roller date stamp"],[14,"Delfonics pouch","Covers & organizers","https://link.amazon/B00UPchQP","assets/products/delfonics-pouch.webp","Delfonics water-resistant utility pouch"],[15,"Diamine 30ml ink","Pens & ink","https://link.amazon/B07oJgBgX","assets/products/diamine-30ml.webp","Diamine 30 ml fountain pen ink bottle"],[104,"Diamond painting coaster kit","Crafts & supplies","https://link.amazon/B09VZasGj","",""],[16,"Dingbats A6 pocket notebook","Notebooks & planners","https://link.amazon/B0aCXerpp","assets/products/product-16-dingbats-a6-pocket-notebook.webp","Dingbats A6 pocket notebook"],[17,"Elastic cord","Crafts & supplies","https://tinyurl.com/w4hu8xpr","assets/products/product-17-elastic-cord.webp","Elastic cord"],[21,"Field Notes dupes","Notebooks & planners","https://link.amazon/B0bhAjNhY","assets/products/product-21-field-notes-dupe-notebooks.webp","Field Notes dupe notebooks"],[20,"Field notes notebook","Notebooks & planners","https://link.amazon/B0gPY0fQ7","assets/products/field-notes.webp","Field Notes Original Kraft memo books"],[22,"FlexiSpot E6 standing desk","Desk & tech","https://link.amazon/B0eVH96vf","assets/products/product-22-flexispot-e6-standing-desk.webp","FlexiSpot E6 Standing Desk"],[24,"Fruits & veggies crochet pattern","Crafts & supplies","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1099959&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Fstrfrnt%2Fwfsftrhotomqzg0v%2Fshare%3Furl%3Dhttps%253A%252F%252Fwww.etsy.com%252Flisting%252F1152210632%252F50-crochet-pattern-bundle-ebook-pdf%26listing_page_id%3D1152210632","assets/products/product-24-fruits-veggies-crochet-pattern.webp","Fruits & veggies crochet pattern"],[107,"Green pencil case","Covers & organizers","https://link.amazon/B0192yFmv","",""],[108,"Halloween village plastic canvas kit","Crafts & supplies","https://link.amazon/B06JLpePW","",""],[99,"Hanging closet organizer","Covers & organizers","https://link.amazon/B0bAPDU8G","assets/products/product-99-hanging-closet-organizer.webp","Hanging closet organizer"],[98,"Hanging door organizer","Covers & organizers","https://link.amazon/B06XmkMLH","assets/products/product-98-hanging-door-organizer.webp","Hanging door organizer"],[27,"Headphone stand","Desk & tech","https://link.amazon/B01HnvmWt","assets/products/product-27-headphone-stand.webp","Headphone stand"],[29,"Hobonichi A6 graph notebook","Notebooks & planners","https://link.amazon/B06sJ0bt3","assets/products/product-29-hobonichi-a6-graph-notebook.webp","Hobonichi A6 graph notebook"],[30,"Hobonichi cousin","Notebooks & planners","https://link.amazon/B09DVGYjP","assets/hobonichi-cousin.jpg","Open Hobonichi Cousin planner showing its daily page layout"],[31,"Hobonichi day-free","Notebooks & planners","https://link.amazon/B0096G6iz","assets/products/hobonichi-dayfree.webp","Hobonichi Day-Free planner"],[92,"IKEA alex drawers","Desk & tech","https://link.amazon/B0fTXoAOJ","assets/products/ikea-alex.jpg","White IKEA ALEX drawer unit"],[95,"IKEA EKENABBEN closet shelves","Covers & organizers","https://link.amazon/B024VkXEz","assets/products/product-95-ikea-ekenabben-closet-shelves.webp","IKEA EKENABBEN closet shelves"],[93,"IKEA SKÅDIS pegboard","Desk & tech","https://link.amazon/B02KdQwys","assets/products/ikea-skadis.webp","White IKEA SKÅDIS pegboard"],[94,"IKEA UPPLYST cloud lamps","Desk & tech","https://link.amazon/B09gyZSIh","assets/products/ikea-upplyst.webp","IKEA UPPLYST cloud wall lamp"],[32,"Jinaho 100 centennial fountain pens","Pens & ink","https://s.click.aliexpress.com/e/_omtjp4J","assets/products/jinhao-100.webp","Jinhao 100 Centennial fountain pen"],[34,"Kindle paperwhite","E-readers & accessories","https://link.amazon/B07zRCkZi","assets/products/kindle-paperwhite.webp","Black Kindle Paperwhite e-reader"],[35,"KnotMonster sushi crochet patterns","Crafts & supplies","https://click.linksynergy.com/deeplink?id=61cuW*0Y5Mc&mid=54066&murl=https%3A%2F%2Fwww.etsy.com%2Flisting%2F1011508123%2Fsushi-food-bundle-crochet-patterns-ebook%3Fls%3Dr%26sr_prefetch%3D1%26pf_from%3Dshop_home%26ref%3Ditems-pagination-9%26pro%3D1%26sts%3D1%26dd%3D1%26content_source%3D794e56d9a92b6b123e885237829e1ef5%25253ALTd289c2b89609baeaee61f44e73b8a73db7e0011e%26logging_key%3D794e56d9a92b6b123e885237829e1ef5%253ALTd289c2b89609baeaee61f44e73b8a73db7e0011e","assets/products/product-35-knotmonster-sushi-crochet-patterns.webp","KnotMonster sushi crochet patterns"],[36,"Kobo libra colour","E-readers & accessories","https://link.amazon/B0hTSIEMR","assets/kobo-libra-colour.png","Black Kobo Libra Colour e-reader with color book covers on screen"],[68,"Kobo screen protector","E-readers & accessories","https://link.amazon/B06FGLM9G","assets/products/product-68-kobo-screen-protector.webp","Kobo screen protector"],[90,"Latch hook canvas","Crafts & supplies","https://link.amazon/B02pzedLw","assets/products/product-90-latch-hook-canvas.webp","Latch hook canvas"],[39,"Leather hole punch","Crafts & supplies","https://tinyurl.com/56d5nukd","assets/products/product-39-leather-hole-punch.webp","Leather hole punch"],[65,"Leather pocket notebook cover","Covers & organizers","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1098440&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F781389036%2Fpersonalized-groomsmen-gift-field-notes%3Fref%3Dyr_purchases","assets/products/product-65-leather-pocket-notebook-cover.webp","Leather pocket notebook cover"],[18,"Leather stamp embossing kit","Crafts & supplies","https://link.amazon/B0iYBypMZ","assets/products/leather-stamp.webp","Leather stamp embossing tool kit"],[49,"LG 34” monitor","Desk & tech","https://link.amazon/B08lHl7om","assets/products/product-49-lg-34-monitor.webp","LG 34” Monitor"],[41,"LIFE A5 grid notebook","Notebooks & planners","https://link.amazon/B0hU6L70R","assets/products/life-a5.webp","LIFE Noble A5 grid notebook"],[42,"LIFE A7 grid notebook","Notebooks & planners","https://link.amazon/B032JyJQl","assets/products/life-a7.webp","LIFE Noble A7 grid notebook"],[43,"LIFE B6 plain notebook","Notebooks & planners","https://link.amazon/B000vMxOW","assets/products/life-b6.jpg","LIFE Noble B6 plain notebook"],[45,"Majohn A1 fountain pen","Pens & ink","https://s.click.aliexpress.com/e/_c2QjsXFp","assets/products/majohn-a1.jpg","Majohn A1 retractable fountain pen"],[46,"Matcha keycaps","Desk & tech","https://s.click.aliexpress.com/e/_c3psWBCV","assets/products/matcha-keycaps.webp","Cream and matcha green keyboard keycaps"],[33,"Mechanical keyboard","Desk & tech","https://link.amazon/B098nczpK","assets/products/product-33-mechanical-keyboard.webp","Mechanical Keyboard"],[25,"Metallic acrylic paint","Crafts & supplies","https://temu.to/k/pik4rgho07w","assets/products/product-25-gold-acrylic-paint.webp","Gold acrylic paint"],[1,"Midori A5 transparent cover","Covers & organizers","https://link.amazon/B00hPoRDa","assets/products/midori-a5-cover.webp","Midori MD A5 transparent cover"],[101,"Midori MD A5 plain paper notebook","Notebooks & planners","https://link.amazon/B03jGShh0","assets/products/midori-md-a5.webp","Midori MD A5 plain notebook"],[7,"Midori traveler's notebook blank refill","Notebooks & planners","https://link.amazon/B062tC4u2","assets/products/midori-blank-refill.webp","Traveler's Notebook regular blank refill 003"],[44,"Midori traveler's notebook lined refill","Notebooks & planners","https://link.amazon/B0bS6sSPv","assets/products/product-44-midori-traveler-s-notebook-lined-refill.webp","Midori Traveler's Notebook lined refill"],[48,"Mini rubber stamps","Pens & ink","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1100254&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F695282131%2Fmini-rubber-stamp-book%3Fref%3Dyr_purchases","assets/products/mini-rubber-stamp.webp","Mini book-shaped rubber stamp"],[50,"Monitor lightbar","Desk & tech","https://link.amazon/B04lINmAp","assets/products/monitor-lightbar.webp","BenQ ScreenBar monitor light"],[51,"Moterm standard TN leather cover","Covers & organizers","https://link.amazon/B0fh5a43a","assets/products/product-51-moterm-standard-tn-leather-cover.webp","Moterm Standard TN leather cover"],[53,"Mouse and wrist pad","Desk & tech","https://link.amazon/B0eM47MbQ","assets/products/product-53-mouse-and-wrist-pad.webp","Mouse and wrist pad"],[55,"MUJI 0.5mm pen","Pens & ink","https://link.amazon/B03PV25Ww","assets/products/muji-pen.webp","MUJI smooth gel ink ballpoint pens"],[56,"Mushroom guy pattern","Crafts & supplies","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1100337&type=10&subid=0&murl=https%3A%2F%2Fwww.etsy.com%2Fstrfrnt%2Fwfsftrhotomqzg0v%2Fshare%3Furl%3Dhttps%253A%252F%252Fwww.etsy.com%252Flisting%252F1793293648%252Fmushroom-guy-critter-stitch-crochet%26listing_page_id%3D1793293648","assets/products/mushroom-pattern.webp","Mushroom Guy crochet pattern"],[3,"Ox knight yellow A5 leather cover","Covers & organizers","https://link.amazon/B05atfFFO","assets/products/product-3-ox-knight-yellow-a5-leather-cover.webp","Ox Knight yellow A5 leather cover"],[106,"Paint by number canvas kit","Crafts & supplies","https://link.amazon/B0a1XIlZS","",""],[58,"Papermate felt tip pen","Pens & ink","https://link.amazon/B0dbl2vee","assets/products/product-58-papermate-felt-tip-pen.webp","Papermate Felt Tip Pen"],[79,"Passport-size wallet/card holder","Covers & organizers","https://link.amazon/B08hDj3HC","assets/products/product-79-passport-size-wallet-card-holder.webp","Passport-size wallet/card holder"],[60,"Pentel fude touch brush pen","Pens & ink","https://link.amazon/B01OU0KNI","assets/products/pentel-fude.webp","Pentel Fude Touch brush sign pens"],[61,"Pilot iroshizuku 15ml inks","Pens & ink","https://s.click.aliexpress.com/e/_c4FaD1yz","assets/products/pilot-iro-30.webp","Pilot Iroshizuku 15 ml fountain pen ink"],[62,"Pilot iroshizuku 50ml ink","Pens & ink","https://link.amazon/B05VtK73t","assets/products/pilot-iro-50.jpg","Pilot Iroshizuku 50 ml fountain pen ink"],[63,"Pilot kakuno fountain pen","Pens & ink","https://link.amazon/B015CO6vy","assets/pilot-kakuno.png","Pilot Kakuno fountain pens in assorted colors"],[64,"Pilot vanishing point","Pens & ink","https://link.amazon/B0gQMPCxW","assets/products/pilot-vp.webp","Pilot Vanishing Point fountain pen"],[28,"Pink headset","Desk & tech","https://link.amazon/B0fq9Ndxx","assets/products/product-28-headset.webp","Headset"],[102,"Printable clear sticker paper","Crafts & supplies","https://link.amazon/B0hasgquh","assets/products/product-102-printable-clear-sticker-paper.webp","Printable Clear Sticker Paper"],[66,"Prismacolor colored pencils","Crafts & supplies","https://link.amazon/B01D7yfcc","assets/products/product-66-prismacolor-colored-pencils.webp","Prismacolor colored pencils"],[105,"Punch needle tool kit","Crafts & supplies","https://link.amazon/B08IgKpoX","",""],[37,"RENAISSER kobo stylus","E-readers & accessories","https://link.amazon/B073aVzjv","assets/products/product-37-renaisser-kobo-stylus.webp","RENAISSER Kobo stylus"],[26,"Rolife mini greenhouse kit","Crafts & supplies","https://link.amazon/B03fLljnp","assets/products/rolife-greenhouse.webp","Rolife Cathy's Flower House miniature kit"],[67,"Rotating pen organizer","Covers & organizers","https://link.amazon/B05oawJJ1","assets/products/rotating-pen-organizer.jpg","Rotating desktop pen organizer"],[40,"Sew mini treats felt plushie book","Crafts & supplies","https://link.amazon/B0hbQ1Wv8","assets/products/product-40-sew-mini-treats-felt-plushie-book.webp","Sew Mini Treats felt plushie book"],[69,"Shrink plastic","Crafts & supplies","https://link.amazon/B09TbNJIz","assets/products/shrink-plastic.jpg","Clear shrink plastic craft sheets"],[97,"Smart power strip","Desk & tech","https://link.amazon/B01ieXLLx","assets/products/kasa-hs300.jpg","TP-Link Kasa HS300 smart power strip"],[70,"Stalogy 1/2 year notebook","Notebooks & planners","https://link.amazon/B0bkj2EYz","assets/products/stalogy-half.webp","STALOGY half-year notebook"],[88,"Sterling ink complete common planner","Notebooks & planners","https://sterling-ink.com?referralCode=2xr74WjGUs5","assets/products/sterling-ink.webp","Sterling Ink Complete Common Planner"],[100,"Task lamp","Desk & tech","https://link.amazon/B0fU89QnI","assets/products/product-100-task-lamp.webp","Task Lamp"],[72,"Tombow dual brush pens","Pens & ink","https://link.amazon/B04iwGMvk","assets/products/product-72-tombow-dual-brush-pens.webp","Tombow Dual Brush Pens"],[73,"Tomoe river notebook","Notebooks & planners","https://link.amazon/B07hyNsgq","assets/products/tomoe-river.webp","Sakae Tomoe River notebook"],[59,"Travelers company passport-size notebooks","Notebooks & planners","https://link.amazon/B04hZfCqC","assets/products/product-59-travelers-company-passport-size-notebooks.webp","Travelers Company passport-size notebooks"],[74,"TWSBI diamond 580 fountain pen","Pens & ink","https://link.amazon/B0cPBMMRw","assets/products/twsbi-580.webp","TWSBI Diamond 580 clear fountain pen"],[75,"TWSBI eco fountain pen","Pens & ink","https://link.amazon/B0cv9r7dp","assets/twsbi-eco.jpg","White and clear TWSBI Eco fountain pen"],[89,"TWSBI eco white and rose gold nib F","Pens & ink","https://link.amazon/B0cF0M88Z","assets/products/twsbi-rose-gold.webp","TWSBI Eco white and rose gold fountain pen"],[76,"Uniball one P gel pen","Pens & ink","https://link.amazon/B07Jgqa35","assets/products/uniball-one-p.png","Uni-ball One P gel pen"],[52,"USB mouse","Desk & tech","https://link.amazon/B03JFGp2D","assets/products/product-52-usb-mouse.webp","USB Mouse"],[77,"UV resin","Crafts & supplies","https://link.amazon/B036eEXEZ","assets/products/product-77-uv-resin.webp","UV resin"],[38,"Veg tanned leather panels","Crafts & supplies","https://www.rmleathersupply.com/products/badalassi-carlo-minerva-smooth-veg-tanned-leather-4-5oz-1-8mm?variant=32319595937901","assets/products/product-38-veg-tanned-leather-panels.webp","Veg Tanned Leather Panels"],[78,"Vertical pen storage","Covers & organizers","https://link.amazon/B05ypYyZQ","assets/products/vertical-pen-storage.jpg","Multi-layer vertical pen organizer"],[103,"White printable vinyl sticker paper","Crafts & supplies","https://link.amazon/B09ECMT0o","assets/products/white-vinyl-paper.webp","White printable vinyl sticker paper"],[57,"Wooden craft storage box","Covers & organizers","https://link.amazon/B0hosqKSh","assets/products/product-57-organizer-storage-box.webp","Wooden craft storage box"],[80,"xTeink clear cover","Covers & organizers","https://link.amazon/B0e7u8UlI","assets/products/product-80-xteink-clear-cover.webp","xTeink clear cover"],[81,"xTeink X3","E-readers & accessories","https://go.sjv.io/xJoX4y","assets/products/product-81-xteink-x3.webp","xTeink X3"],[82,"xTeink X4","E-readers & accessories","https://go.sjv.io/ZVz64W","assets/products/product-82-xteink-x4.webp","xTeink X4"],[83,"xTeink X4 Pro","E-readers & accessories","https://go.sjv.io/7XKLj5","assets/products/product-83-xteink-x4-pro.webp","xTeink X4 Pro"],[85,"Zebra 0.5mm vintage colors ballpoint pen","Pens & ink","https://link.amazon/B01H5B1v4","assets/products/product-85-zebra-clip-0-5mm-ballpoint-pen.webp","Zebra 0.5mm vintage colors ballpoint pen"],[86,"Zebra sarasa mark-on 0.4mm gel pen","Pens & ink","https://link.amazon/B0hYVxtDL","assets/products/zebra-sarasa.webp","Zebra Sarasa Clip 0.4 mm gel pen"],[87,"ZINK paper","Desk & tech","https://link.amazon/B01sVujBZ","assets/products/product-87-zink-paper.webp","ZINK paper"],[23,"Zippered fountain pen case","Covers & organizers","https://click.linksynergy.com/link?id=61cuW*0Y5Mc&offerid=1995859.1098386&type=10&subid=0&murl=https%3A%2F%2Fetsy.com%2Flisting%2F1889918683%2Fpersonalization-crazy-horse-leather-pen%3Fref%3Duser_profile%26pro%3D1","assets/products/pen-case.webp","Crazy Horse leather fountain pen case"]].map(([id,name,category,url,image,alt]) => ({id,name,category,url,image,alt}));
 
-    const icons = {
-      arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg>'
-    };
-    const state = { query: '', category: 'All', productId: null, view: 'collections' };
-    const list = document.getElementById('productList');
-    const empty = document.getElementById('emptyState');
-    const resultCount = document.getElementById('resultCount');
-    const search = document.getElementById('search');
-    const clearSearch = document.getElementById('clearSearch');
-    const categoryWrap = document.getElementById('categories');
-    const viewGallery = document.getElementById('viewGallery');
-    const viewCollections = document.getElementById('viewCollections');
-    const viewList = document.getElementById('viewList');
-    const collectionsView = document.getElementById('collectionsView');
-    const findTools = document.getElementById('findTools');
-    const listHeading = document.getElementById('listHeading');
-    const searchMedia = window.matchMedia('(max-width: 719px)');
-    function syncSearchPlaceholder() {
-      search.placeholder = searchMedia.matches ? 'Search product' : 'Search product, category, or store';
-    }
-    if (searchMedia.addEventListener) searchMedia.addEventListener('change', syncSearchPlaceholder);
-    syncSearchPlaceholder();
+const icons = {
+  arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg>',
+  rightArrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"></path></svg>',
+  upArrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"></path></svg>',
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>'
+};
+const state = { query: '', category: 'All', productId: null, view: 'collections' };
+const hero = document.getElementById('brandHero');
+const searchInput = document.getElementById('search');
+const clearSearch = document.getElementById('clearSearch');
+const categoryWrap = document.getElementById('categories');
+const listHeading = document.getElementById('productListHeading');
+const resultCount = document.getElementById('resultCount');
+const sortLabel = document.getElementById('sortLabel');
+const viewCollectionsBtn = document.getElementById('viewCollections');
+const viewGalleryBtn = document.getElementById('viewGallery');
+const viewListBtn = document.getElementById('viewList');
+const collectionsView = document.getElementById('collectionsView');
+const productRows = document.getElementById('productRows');
+const galleryList = document.getElementById('productGallery');
+const emptyState = document.getElementById('emptyState');
+const backToTop = document.getElementById('backToTop');
+const searchMedia = window.matchMedia('(min-width: 720px)');
+function syncSearchPlaceholder() {
+  searchInput.placeholder = searchMedia.matches ? 'Search product, category, or store' : 'Search product';
+}
+if (searchMedia.addEventListener) searchMedia.addEventListener('change', syncSearchPlaceholder);
+syncSearchPlaceholder();
 
-    function syncUrl() {
-      try {
-        const params = new URLSearchParams();
-        if (state.category !== 'All') params.set('category', state.category);
-        if (state.query.trim()) params.set('q', state.query.trim());
-        if (state.productId) params.set('product', state.productId);
-        if (state.view !== 'collections') params.set('view', state.view);
-        const query = params.toString();
-        window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
-      } catch (_) { /* address-bar sync is best-effort */ }
+function syncUrl() {
+  try {
+    const params = new URLSearchParams();
+    if (state.category !== 'All') params.set('category', state.category);
+    if (state.query.trim()) params.set('q', state.query.trim());
+    if (state.productId) params.set('product', state.productId);
+    if (state.view !== 'collections') params.set('view', state.view);
+    const query = params.toString();
+    window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
+  } catch (_) { /* address-bar sync is best-effort */ }
+}
+function getInitialParams(sourceUrls) {
+  const sources = sourceUrls || (() => {
+    const urls = [];
+    try { urls.push(window.location.href); } catch (_) {}
+    try {
+      if (window.top !== window) urls.push(window.top.location.href);
+    } catch (_) { /* the public wrapper is cross-origin */ }
+    if (document.referrer) urls.push(document.referrer);
+    return urls;
+  })();
+  for (const source of sources) {
+    try {
+      const params = new URL(source, window.location.href).searchParams;
+      if (params.has('category') || params.has('q') || params.has('product') || params.has('view')) return params;
+    } catch (_) { /* try the next available URL source */ }
+  }
+  return new URLSearchParams();
+}
+function applyParams() {
+  const params = getInitialParams();
+  const categoryParam = params.get('category');
+  if (categoryParam) {
+    const match = [...new Set(products.map(product => product.category))]
+      .find(category => category.toLocaleLowerCase() === categoryParam.trim().toLocaleLowerCase());
+    if (match) state.category = match;
+  }
+  const queryParam = params.get('q');
+  if (queryParam) { state.query = queryParam; searchInput.value = queryParam; }
+  const productParam = Number(params.get('product'));
+  if (productParam && products.some(product => product.id === productParam)) {
+    state.view = 'gallery';
+    state.productId = productParam;
+    if (!filteredProducts().some(product => product.id === productParam)) {
+      state.category = 'All'; state.query = ''; searchInput.value = '';
     }
-    function getInitialParams(sourceUrls) {
-      const sources = sourceUrls || (() => {
-        const urls = [];
-        try { urls.push(window.location.href); } catch (_) {}
-        try {
-          if (window.top !== window) urls.push(window.top.location.href);
-        } catch (_) { /* the public wrapper is cross-origin */ }
-        if (document.referrer) urls.push(document.referrer);
-        return urls;
-      })();
-      for (const source of sources) {
-        try {
-          const params = new URL(source, window.location.href).searchParams;
-          if (params.has('category') || params.has('q') || params.has('product')) return params;
-        } catch (_) { /* try the next available URL source */ }
-      }
-      return new URLSearchParams();
-    }
-    function applyParams() {
-      const params = getInitialParams();
-      const categoryParam = params.get('category');
-      if (categoryParam) {
-        const match = [...new Set(products.map(product => product.category))]
-          .find(category => category.toLocaleLowerCase() === categoryParam.trim().toLocaleLowerCase());
-        if (match) state.category = match;
-      }
-      const queryParam = params.get('q');
-      if (queryParam) { state.query = queryParam; search.value = queryParam; }
-      const productParam = Number(params.get('product'));
-      if (productParam && products.some(product => product.id === productParam)) {
-        state.view = 'gallery';
-        state.productId = productParam;
-        if (!filteredProducts().some(product => product.id === productParam)) {
-          state.category = 'All'; state.query = ''; search.value = '';
-        }
-      } else {
-        const viewParam = params.get('view');
-        if (viewParam === 'collections' || viewParam === 'gallery' || viewParam === 'list') state.view = viewParam;
-      }
-    }
+  } else {
+    const viewParam = params.get('view');
+    if (viewParam === 'collections' || viewParam === 'gallery' || viewParam === 'list') state.view = viewParam;
+  }
+}
 
-    function hostFor(url) {
-      try { return new URL(url).hostname.replace(/^www\./, ''); }
-      catch (_) { return 'saved link'; }
-    }
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
-    }
-    function filteredProducts() {
-      const needle = state.query.trim().toLocaleLowerCase();
-      return products.filter(product => {
-        const matchesCategory = state.category === 'All' || product.category === state.category;
-        const haystack = `${product.name} ${product.category} ${hostFor(product.url)}`.toLocaleLowerCase();
-        return matchesCategory && (!needle || haystack.includes(needle));
-      });
-    }
-    function renderCategories() {
-      const categories = ['All', ...new Set(products.map(product => product.category).sort())];
-      categoryWrap.innerHTML = categories.map(category => `<button type="button" class="category-button" data-category="${escapeHtml(category)}" aria-pressed="${state.category === category}">${escapeHtml(category)}</button>`).join('');
-    }
-    const COLLECTION_ORDER = ['Covers & organizers', 'Crafts & supplies', 'Desk & tech', 'E-readers & accessories', 'Notebooks & planners', 'Pens & ink'];
-    const COLLECTION_SHADOWS = ['#F0A4D6', '#FDA009', '#F67E59', '#99C1BB', '#FAD3BC', '#356669'];
-    function shuffleInPlace(items) {
-      for (let i = items.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [items[i], items[j]] = [items[j], items[i]];
-      }
-      return items;
-    }
-    function collectionCardHtml(product, shadow) {
-      const shadowAttr = shadow ? ' style="box-shadow: 6px 6px 0 ' + shadow + ';"' : '';
-      const media = product.image
-        ? `<img class="product-image" src="${escapeHtml(product.image)}" alt="${escapeHtml(product.alt || '')}" loading="lazy" />`
-        : `<span class="product-placeholder" aria-hidden="true"><span class="placeholder-sun"></span><img src="assets/cozy-hobby-time-logo.jpg" alt="" /><span class="placeholder-sprig">\u2726</span></span>`;
-      return `<article class="product-card">
-          <a class="product-media" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.name)}">
-            ${media}
-            <span class="product-media-overlay">View product ${icons.arrow}</span>
-          </a>
-          <div class="product-info"${shadowAttr}>
-            <p class="product-category">${escapeHtml(product.category)}</p>
-            <h2>${escapeHtml(product.name)}</h2>
-            <p class="saved-host">${escapeHtml(hostFor(product.url))}</p>
-            <div class="row-actions">
-              <a class="open-button" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer">Open ${icons.arrow}</a>
-            </div>
+function hostFor(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); }
+  catch (_) { return 'saved link'; }
+}
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+}
+function filteredProducts() {
+  const needle = state.query.trim().toLocaleLowerCase();
+  return products.filter(product => {
+    const matchesCategory = state.category === 'All' || product.category === state.category;
+    const haystack = `${product.name} ${product.category} ${hostFor(product.url)}`.toLocaleLowerCase();
+    return matchesCategory && (!needle || haystack.includes(needle));
+  });
+}
+function renderCategories() {
+  const categories = ['All', ...new Set(products.map(product => product.category).sort())];
+  categoryWrap.innerHTML = categories.map(category => `<button type="button" class="category-button" data-category="${escapeHtml(category)}" aria-pressed="${state.category === category}">${escapeHtml(category)}</button>`).join('');
+}
+function shuffleInPlace(items) {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  return items;
+}
+function collectionGroups() {
+  const visible = filteredProducts();
+  const groups = new Map();
+  for (const product of visible) {
+    const group = groups.get(product.category) || [];
+    group.push(product);
+    groups.set(product.category, group);
+  }
+  return Array.from(groups.entries())
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, group]) => ({ name, total: group.length, products: shuffleInPlace(group.slice()).slice(0, 5) }));
+}
+function productImage(product, cls) {
+  const has = !!product.image;
+  const src = has ? product.image : LOGO;
+  const alt = has ? (product.alt || product.name) : 'Cozy Hobby Time logo';
+  return `<img class="${cls}" src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='${LOGO}';" />`;
+}
+function openButtonHtml(product) {
+  return `<a class="open-button" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.name)}">${icons.arrow}<span>Open</span></a>`;
+}
+function collectionItemHtml(product) {
+  return `<article class="collection-item">
+      <a class="collection-thumb" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.name)}">
+        ${productImage(product, '')}
+        <span aria-hidden="true">${icons.arrow}</span>
+      </a>
+      <div class="collection-item-info">
+        <div class="product-title-row collection-title-row">
+          <a href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(product.name)}</a>
+        </div>
+        <p class="saved-host">${escapeHtml(hostFor(product.url))}</p>
+        <div class="row-actions collection-actions">
+          ${openButtonHtml(product)}
+        </div>
+      </div>
+    </article>`;
+}
+function seeAllTileHtml(category, total) {
+  return `<a class="collection-see-all-tile" href="#productListHeading" data-see-all="${escapeHtml(category)}" aria-label="See all ${total} ${escapeHtml(category)} products"><span>See all</span>${icons.rightArrow}</a>`;
+}
+function renderCollections() {
+  const groups = collectionGroups();
+  collectionsView.innerHTML = groups.map(({ name, total, products: sample }, index) => {
+    const cards = sample.map(collectionItemHtml).join('');
+    return `<section class="collection-section" aria-labelledby="collection-${index}">
+        <header class="collection-header">
+          <div class="collection-heading-group">
+            <h2 id="collection-${index}">${escapeHtml(name)}</h2>
+            <p>${total} ${total === 1 ? 'find' : 'finds'}</p>
           </div>
-        </article>`;
+          <a class="collection-see-all-link" href="#productListHeading" data-see-all="${escapeHtml(name)}">See all ${icons.rightArrow}</a>
+        </header>
+        <div class="collection-shelf-shell">
+          <div class="collection-items" data-shelf="${escapeHtml(name)}">${cards}${seeAllTileHtml(name, total)}</div>
+        </div>
+      </section>`;
+  }).join('');
+  collectionsView.querySelectorAll('.collection-items').forEach(setupShelfArrows);
+}
+function setupShelfArrows(shelf) {
+  const shell = shelf.closest('.collection-shelf-shell');
+  const name = shelf.dataset.shelf;
+  function update() {
+    const canLeft = shelf.scrollLeft > 2;
+    const canRight = shelf.scrollLeft + shelf.clientWidth < shelf.scrollWidth - 2;
+    let leftBtn = shell.querySelector('.collection-scroll-arrow--left');
+    let rightBtn = shell.querySelector('.collection-scroll-arrow--right');
+    if (canLeft && !leftBtn) {
+      leftBtn = document.createElement('button');
+      leftBtn.type = 'button';
+      leftBtn.className = 'collection-scroll-arrow collection-scroll-arrow--left';
+      leftBtn.setAttribute('aria-label', 'Scroll ' + name + ' left');
+      leftBtn.innerHTML = icons.rightArrow;
+      leftBtn.addEventListener('click', () => scrollShelf(shelf, -1));
+      shell.appendChild(leftBtn);
+    } else if (!canLeft && leftBtn) {
+      leftBtn.remove();
     }
-    function renderCollections() {
-      collectionsView.innerHTML = COLLECTION_ORDER.map((category, index) => {
-        const items = products.filter(product => product.category === category);
-        if (!items.length) return '';
-        const sample = shuffleInPlace(items.slice()).slice(0, 5);
-        const shadow = COLLECTION_SHADOWS[index % COLLECTION_SHADOWS.length];
-        const cards = sample.map(product => collectionCardHtml(product, shadow)).join('');
-        return `<section class="collection-section" aria-label="${escapeHtml(category)}">
-          <div class="collection-head">
-            <h2>${escapeHtml(category)}</h2>
-            <a class="see-all" href="#" data-see-all="${escapeHtml(category)}">See all &rarr;</a>
-          </div>
-          <p class="collection-count">${items.length} finds</p>
-          <div class="collection-shelf">${cards}<a class="see-all shelf-end" href="#" data-see-all="${escapeHtml(category)}">See all &rarr;</a></div>
-        </section>`;
-      }).join('');
+    if (canRight && !rightBtn) {
+      rightBtn = document.createElement('button');
+      rightBtn.type = 'button';
+      rightBtn.className = 'collection-scroll-arrow collection-scroll-arrow--right';
+      rightBtn.setAttribute('aria-label', 'Scroll ' + name + ' right');
+      rightBtn.innerHTML = icons.rightArrow;
+      rightBtn.addEventListener('click', () => scrollShelf(shelf, 1));
+      shell.appendChild(rightBtn);
+    } else if (!canRight && rightBtn) {
+      rightBtn.remove();
     }
-    function render() {
-      const view = state.view;
-      const isCollections = view === 'collections';
-      viewCollections.setAttribute('aria-pressed', String(view === 'collections'));
-      viewGallery.setAttribute('aria-pressed', String(view === 'gallery'));
-      viewList.setAttribute('aria-pressed', String(view === 'list'));
-      findTools.hidden = isCollections;
-      listHeading.hidden = isCollections;
-      collectionsView.hidden = !isCollections;
-      list.classList.toggle('is-list', view === 'list');
-      if (isCollections) { list.hidden = true; empty.hidden = true; renderCollections(); return; }
-      const visible = filteredProducts();
-      resultCount.textContent = visible.length === products.length ? `${products.length} curated finds` : `${visible.length} of ${products.length} curated finds`;
-      clearSearch.hidden = !state.query;
-      list.hidden = visible.length === 0;
-      empty.hidden = visible.length !== 0;
-      list.innerHTML = visible.map((product) => {
-        const media = product.image
-          ? `<img class="product-image" src="${escapeHtml(product.image)}" alt="${escapeHtml(product.alt || '')}" loading="lazy" />`
-          : `<span class="product-placeholder" aria-hidden="true"><span class="placeholder-sun"></span><img src="assets/cozy-hobby-time-logo.jpg" alt="" /><span class="placeholder-sprig">✦</span></span>`;
-        return `<article id="product-${product.id}" class="product-card${state.productId === product.id ? ' is-highlighted' : ''}">
-          <a class="product-media" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.name)}">
-            ${media}
-            <span class="product-media-overlay">View product ${icons.arrow}</span>
-          </a>
-          <div class="product-info">
-            <p class="product-category">${escapeHtml(product.category)}</p>
-            <h2>${escapeHtml(product.name)}</h2>
-            <p class="saved-host">${escapeHtml(hostFor(product.url))}</p>
-            <div class="row-actions">
-              <a class="open-button" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer">Open ${icons.arrow}</a>
-            </div>
-          </div>
-        </article>`;
-      }).join('');
-    }
+  }
+  shelf.addEventListener('scroll', update, { passive: true });
+  window.requestAnimationFrame(update);
+}
+function scrollShelf(shelf, direction) {
+  const first = shelf.querySelector('.collection-item');
+  const distance = first ? first.offsetWidth + 18 : shelf.clientWidth * 0.8;
+  shelf.scrollBy({ left: direction * distance, behavior: 'smooth' });
+}
+function galleryCardHtml(product, highlighted) {
+  return `<article id="product-${product.id}" class="product-card${highlighted ? ' is-highlighted' : ''}">
+      <a class="product-media" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.name)}">
+        ${productImage(product, 'product-image')}
+        <span class="product-media-overlay"><span class="view-product-label"><span class="view-product-line">View</span> <span class="view-product-line view-product-line--second">product${icons.arrow}</span></span></span>
+      </a>
+      <div class="product-info">
+        <p class="product-category">${escapeHtml(product.category)}</p>
+        <div class="product-title-row"><h2>${escapeHtml(product.name)}</h2></div>
+        <p class="saved-host">${escapeHtml(hostFor(product.url))}</p>
+        <div class="row-actions">
+          ${openButtonHtml(product)}
+        </div>
+      </div>
+    </article>`;
+}
+function rowHtml(product, highlighted) {
+  return `<article id="product-${product.id}" class="product-row${highlighted ? ' is-highlighted' : ''}">
+      <a class="row-thumb" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.name)}">
+        ${productImage(product, 'row-thumb-image')}
+      </a>
+      <div class="row-info">
+        <p class="product-category">${escapeHtml(product.category)}</p>
+        <div class="product-title-row row-title-row">
+          <h2 class="row-title">${escapeHtml(product.name)}</h2>
+        </div>
+        <p class="saved-host">${escapeHtml(hostFor(product.url))}</p>
+        <div class="row-actions row-actions-list">
+          ${openButtonHtml(product)}
+        </div>
+      </div>
+    </article>`;
+}
+function render() {
+  const view = state.view;
+  viewCollectionsBtn.setAttribute('aria-pressed', String(view === 'collections'));
+  viewGalleryBtn.setAttribute('aria-pressed', String(view === 'gallery'));
+  viewListBtn.setAttribute('aria-pressed', String(view === 'list'));
+  const visible = filteredProducts();
+  resultCount.textContent = visible.length === products.length ? `${products.length} curated finds` : `${visible.length} of ${products.length} curated finds`;
+  sortLabel.textContent = view === 'collections' ? 'By collection' : 'A–Z';
+  clearSearch.hidden = !state.query;
+  const hasResults = visible.length !== 0;
+  emptyState.hidden = hasResults;
+  collectionsView.hidden = !hasResults || view !== 'collections';
+  productRows.hidden = !hasResults || view !== 'list';
+  galleryList.hidden = !hasResults || view !== 'gallery';
+  if (!hasResults) return;
+  if (view === 'collections') {
+    renderCollections();
+  } else if (view === 'list') {
+    productRows.innerHTML = visible.map(product => rowHtml(product, state.productId === product.id)).join('');
+  } else {
+    galleryList.innerHTML = visible.map(product => galleryCardHtml(product, state.productId === product.id)).join('');
+  }
+}
 
-    categoryWrap.addEventListener('click', event => {
-      const button = event.target.closest('[data-category]');
-      if (!button) return;
-      state.category = button.dataset.category;
-      state.productId = null;
-      renderCategories(); render(); syncUrl();
-    });
-    search.addEventListener('input', () => { state.query = search.value; state.productId = null; render(); syncUrl(); });
-    clearSearch.addEventListener('click', () => { search.value = ''; state.query = ''; state.productId = null; search.focus(); render(); syncUrl(); });
-    document.getElementById('resetFilters').addEventListener('click', () => { search.value = ''; state.query = ''; state.category = 'All'; state.productId = null; renderCategories(); render(); syncUrl(); });
-    viewGallery.addEventListener('click', () => { state.view = 'gallery'; state.productId = null; render(); syncUrl(); });
-    viewCollections.addEventListener('click', () => { state.view = 'collections'; state.productId = null; render(); syncUrl(); });
-    viewList.addEventListener('click', () => { state.view = 'list'; state.productId = null; render(); syncUrl(); });
-    collectionsView.addEventListener('click', event => {
-      const seeAll = event.target.closest('[data-see-all]');
-      if (!seeAll) return;
-      event.preventDefault();
-      state.view = 'gallery'; state.category = seeAll.dataset.seeAll; state.productId = null;
-      renderCategories(); render(); syncUrl();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+categoryWrap.addEventListener('click', event => {
+  const button = event.target.closest('[data-category]');
+  if (!button) return;
+  state.category = button.dataset.category;
+  state.productId = null;
+  renderCategories(); render(); syncUrl();
+});
+searchInput.addEventListener('input', () => { state.query = searchInput.value; state.productId = null; render(); syncUrl(); });
+clearSearch.addEventListener('click', () => { searchInput.value = ''; state.query = ''; state.productId = null; searchInput.focus(); render(); syncUrl(); });
+document.getElementById('resetFilters').addEventListener('click', () => { searchInput.value = ''; state.query = ''; state.category = 'All'; state.productId = null; renderCategories(); render(); syncUrl(); });
+function setView(view) {
+  state.view = view;
+  state.productId = null;
+  render(); syncUrl();
+}
+viewGalleryBtn.addEventListener('click', () => setView('gallery'));
+viewCollectionsBtn.addEventListener('click', () => setView('collections'));
+viewListBtn.addEventListener('click', () => setView('list'));
+collectionsView.addEventListener('click', event => {
+  const seeAll = event.target.closest('[data-see-all]');
+  if (!seeAll) return;
+  event.preventDefault();
+  state.query = ''; searchInput.value = '';
+  state.category = seeAll.dataset.seeAll;
+  state.productId = null;
+  state.view = 'gallery';
+  renderCategories(); render(); syncUrl();
+  listHeading.scrollIntoView({ block: 'start' });
+});
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(
+    ([entry]) => { backToTop.hidden = entry ? entry.isIntersecting : true; },
+    { root: null, threshold: 0 }
+  );
+  observer.observe(hero);
+}
+backToTop.addEventListener('click', () => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  hero.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'auto' });
+});
 
-    applyParams();
-    renderCategories();
-    render();
-    if (state.productId) {
-      const target = document.getElementById(`product-${state.productId}`);
-      if (target) {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.requestAnimationFrame(() => target.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' }));
-      }
-    }
+applyParams();
+renderCategories();
+render();
+if (state.productId) {
+  const target = document.getElementById(`product-${state.productId}`);
+  if (target) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.requestAnimationFrame(() => target.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' }));
+  }
+}
   </script>
 </body>
 </html>
