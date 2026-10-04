@@ -132,6 +132,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .open-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 36px; border: 2px solid var(--border); padding: 0 10px; background: #356669; color: #fffaf7; text-decoration: none; font-size: 11px; font-weight: 750; cursor: pointer; }
 .open-button svg { width: 16px; height: 16px; }
 .open-button:hover, .open-button:active { background: #99c1bb; color: #356669; }
+.copy-button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 36px; border: 2px solid var(--border); padding: 0 10px; background: #f67e59; color: #356669; text-decoration: none; font-size: 11px; font-weight: 750; cursor: pointer; appearance: none; -webkit-appearance: none; box-shadow: none; }
+.copy-button svg { width: 16px; height: 16px; }
+.copy-button:hover, .copy-button:active, .copy-button.is-copied { background: #fad3bc; background-image: none; color: #356669; box-shadow: none; }
+.title-copy-button { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-top: 1px; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--text); cursor: pointer; }
+.title-copy-button svg { width: 16px; height: 16px; }
+.title-copy-button:hover { background: transparent; color: var(--accent-contrast); }
+.row-title-row .title-copy-button { display: inline-flex; margin: -6px 0 0 4px; vertical-align: middle; }
 .row-actions-list { margin-top: 9px; }
 .state-panel { min-height: 200px; display: grid; place-items: center; align-content: center; gap: 12px; margin-right: 5px; border: 2px solid var(--border); background: var(--surface); box-shadow: var(--soft-offset); color: var(--dim); text-align: center; }
 .state-panel strong { color: var(--text); font-family: "Sour Gummy", ui-rounded, sans-serif; font-size: 23px; }
@@ -428,8 +435,37 @@ const icons = {
   arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"></path></svg>',
   rightArrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"></path></svg>',
   upArrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6.5 10.5 12 5l5.5 5.5"></path></svg>',
-  search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>'
+  search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>',
+  copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="1.5"></rect><path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3"></path></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"></path></svg>'
 };
+async function writeClipboardText(value) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch (_) { /* fall through to legacy path */ }
+  try {
+    const copyField = document.createElement("textarea");
+    copyField.value = value;
+    copyField.setAttribute("readonly", "");
+    copyField.setAttribute("aria-hidden", "true");
+    copyField.style.position = "fixed";
+    copyField.style.inset = "0 auto auto -9999px";
+    copyField.style.width = "1px";
+    copyField.style.height = "1px";
+    copyField.style.opacity = "0";
+    document.body.appendChild(copyField);
+    copyField.focus({ preventScroll: true });
+    copyField.select();
+    copyField.setSelectionRange(0, copyField.value.length);
+    const copied = document.execCommand("copy");
+    copyField.remove();
+    return copied;
+  } catch (_) { return false; }
+}
+function findProduct(id) { return products.find(p => p.id === Number(id)); }
 const state = { query: '', category: 'All', productId: null, view: 'collections' };
 const hero = document.getElementById('brandHero');
 const searchInput = document.getElementById('search');
@@ -654,11 +690,12 @@ function rowHtml(product, highlighted) {
       <div class="row-info">
         <p class="product-category">${escapeHtml(product.category)}</p>
         <div class="product-title-row row-title-row">
-          <h2 class="row-title">${escapeHtml(product.name)}</h2>
+          <h2 class="row-title">${escapeHtml(product.name)}</h2><button type="button" class="title-copy-button" data-copy-title="${product.id}" aria-label="Copy title and link for ${escapeHtml(product.name)}" title="Copy title and link">${icons.copy}</button>
         </div>
         <p class="saved-host">${escapeHtml(hostFor(product.url))}</p>
         <div class="row-actions row-actions-list">
           ${openButtonHtml(product)}
+          <button type="button" class="copy-button" data-copy-link="${product.id}" title="Copy ${escapeHtml(product.name)} product URL">${icons.copy}<span>Copy</span></button>
         </div>
       </div>
     </article>`;
@@ -715,6 +752,29 @@ collectionsView.addEventListener('click', event => {
   state.view = 'gallery';
   renderCategories(); render(); syncUrl();
   listHeading.scrollIntoView({ block: 'start' });
+});
+productRows.addEventListener('click', async event => {
+  const linkBtn = event.target.closest('[data-copy-link]');
+  const titleBtn = event.target.closest('[data-copy-title]');
+  if (!linkBtn && !titleBtn) return;
+  const btn = linkBtn || titleBtn;
+  const id = btn.dataset.copyLink || btn.dataset.copyTitle;
+  const product = findProduct(id);
+  if (!product) return;
+  const text = linkBtn ? product.url : `${product.name} - ${product.url}`;
+  const ok = await writeClipboardText(text);
+  if (ok) {
+    if (linkBtn) {
+      const original = linkBtn.innerHTML;
+      linkBtn.classList.add('is-copied');
+      linkBtn.innerHTML = `${icons.check}<span>Copied</span>`;
+      window.setTimeout(() => { linkBtn.classList.remove('is-copied'); linkBtn.innerHTML = original; }, 1800);
+    } else {
+      const original = titleBtn.innerHTML;
+      titleBtn.innerHTML = icons.check;
+      window.setTimeout(() => { titleBtn.innerHTML = original; }, 1800);
+    }
+  }
 });
 if ('IntersectionObserver' in window) {
   const observer = new IntersectionObserver(
